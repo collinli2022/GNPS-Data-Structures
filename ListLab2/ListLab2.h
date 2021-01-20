@@ -55,10 +55,10 @@ class ListNode {
 		ListNode* insertLast(ListNode* head, string arg);
 
     //inserts a Node into LinkedList
-    ListNode* insertMiddle(ListNode* theRest, String y, int position);
+    ListNode* insertMiddle(ListNode* theRest, string y, int position);
 
     //deletes a node from LinkedList
-    ListNode* remove(ListNode* theRest, position);
+    ListNode* remove(ListNode* theRest, int position);
 		
 		// Getters
 		string getValue() { return value; }
@@ -141,19 +141,42 @@ ListNode* ListNode::insertLast(ListNode* head, string arg) {
 	return head;
 }
 
-ListNode* ListNode::insertMiddle(ListNode* theRest, String y, int position) {
-  ListNode* beforeInsert = this;
+ListNode* ListNode::insertMiddle(ListNode* theRest, string y, int position) {
+  ListNode* beforeInsert = theRest;
   for(int i = 0; i < position-1; i++) { // position-1 because we want the insertedNode to be at that position
     if(beforeInsert->next != NULL) {
-      
+      beforeInsert = beforeInsert->next;
     } else {
       cout << "ERROR" << endl;
     }
   }
 
-  ListNode* insertedNode = new ListNode(y, theRest);
-  this->next = 
+  ListNode* insertedNode = new ListNode(y, beforeInsert->next);
+  beforeInsert->next = insertedNode;
+  
+  return theRest;
 }
 
+ListNode* ListNode::remove(ListNode* theRest, int position) {
+    ListNode* beforeDelete = theRest;
+    for(int i = 0; i < position-1; i++) { // go to position before to reset the next pointer
+        if(beforeDelete->next != NULL) {
+          beforeDelete = beforeDelete->next;
+        } else {
+          cout << "ERROR" << endl;
+        }
+    }
+    
+    if(beforeDelete->next != NULL) {
+        ListNode* temp = beforeDelete->next->next; // store pointer to node after deleted node
+        beforeDelete->next->next = nullptr; // set deleted node's next to be null
+        delete beforeDelete->next->next;
+        beforeDelete->next = temp;
+        temp = nullptr;
+        delete temp;
+    }
+    
+    return theRest;
+}
 
 #endif
