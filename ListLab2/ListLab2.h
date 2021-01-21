@@ -77,29 +77,29 @@ ListNode* ListNode::copyNode(ListNode* arg)  {
 	if(arg == NULL) { 
 		return NULL; // ends recursion if arg==NULL
 	}
-    ListNode* other = new ListNode(); // a new ListNode
-    other->value = arg->value;
-    other->next = arg->next;
-    return other;
+  ListNode* other = new ListNode(); // a new ListNode
+  other->value = arg->value;
+  other->next = arg->next;
+  return other;
 }
 
 ListNode* ListNode::copyList(ListNode* arg) {
 	if(arg == NULL) { // ends recursion
         return NULL;
-    }
-    ListNode* other = new ListNode(); // a new ListNode
-    other->value = arg->value; // same value
-    other->next = arg->copyList(arg->next); // pointer to next will point to a new ListNode with same value
-    return other;
+  }
+  ListNode* other = new ListNode(); // a new ListNode
+  other->value = arg->value; // same value
+  other->next = arg->copyList(arg->next); // pointer to next will point to a new ListNode with same value
+  return other;
 }
 
 ListNode* ListNode::rest(ListNode* h) {
-    if(h == NULL) { // checks if NULL
+  if(h == NULL) { // checks if NULL
     	return NULL;
 	} else if(h->next == NULL) { // makes sure next is not NULL
         return NULL;
-    }
-    return h->copyList(h->next); // returns a copy of the list excluding the head
+  }
+  return h->copyList(h->next); // returns a copy of the list excluding the head
 }
 
 string ListNode::first(ListNode* head) {
@@ -164,32 +164,30 @@ ListNode* ListNode::insertMiddle(ListNode* theRest, string y, int position) {
 }
 
 ListNode* ListNode::remove(ListNode* theRest, int position) {
-    cout << theRest->length(theRest);
-
   if(position < 0 || position >= theRest->length(theRest)) { // out of bounds
     cout << "ERROR: Index of of Bounds" << endl; 
     return theRest;
   }
 
-    ListNode* beforeDelete = theRest;
-    for(int i = 0; i < position-1; i++) { // go to position before to reset the next pointer
-        if(beforeDelete->next != NULL) {
-          beforeDelete = beforeDelete->next;
-        } else {
-          cout << "ERROR" << endl;
-        }
-    }
-    
+  ListNode* beforeDelete = theRest;
+  for(int i = 0; i < position-1; i++) { // go to position before to reset the next pointer
     if(beforeDelete->next != NULL) {
-        ListNode* temp = beforeDelete->next->next; // store pointer to node after deleted node
-        beforeDelete->next->next = nullptr; // set deleted node's next to be null
-        delete beforeDelete->next->next;
-        beforeDelete->next = temp;
-        temp = nullptr;
-        delete temp;
+      beforeDelete = beforeDelete->next;
+    } else {
+      cout << "ERROR" << endl;
     }
-    
-    return theRest;
+  }
+  
+  if(beforeDelete->next != NULL) {
+    ListNode* temp = beforeDelete->next->next; // store pointer to node after deleted node
+    beforeDelete->next->next = nullptr; // set deleted node's next to be null
+    delete beforeDelete->next->next;
+    beforeDelete->next = temp;
+    temp = nullptr;
+    delete temp;
+  }
+  
+  return theRest;
 }
 
 int ListNode::length(ListNode* head) {
