@@ -1,7 +1,7 @@
 // Collin Li
 // Data Structures
 // 01/19/2021
-// ListLab2 header file   
+// ListLab2 header file
 
 // Preprocessor directive
 #include <iostream>
@@ -144,6 +144,7 @@ ListNode* ListNode::insertLast(ListNode* head, string arg) {
 
 ListNode* ListNode::insertMiddle(ListNode* theRest, string y, int position) {
   if(position < 0 || position >= theRest->length(theRest)) { // out of bounds
+    cout << "ERROR: Index of of Bounds" << endl; 
     return theRest;
   }
   
