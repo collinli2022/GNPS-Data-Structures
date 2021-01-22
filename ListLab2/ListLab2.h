@@ -169,6 +169,14 @@ ListNode* ListNode::remove(ListNode* theRest, int position) {
     return theRest;
   }
 
+  if(position == 0) {
+    if(theRest == NULL) {
+      return NULL;
+    } else {
+      return theRest->next;
+    }
+  }
+
   ListNode* beforeDelete = theRest;
   for(int i = 0; i < position-1; i++) { // go to position before to reset the next pointer
     if(beforeDelete->next != NULL) {
