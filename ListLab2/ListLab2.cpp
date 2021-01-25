@@ -45,8 +45,8 @@ int main()
 	cout << "Copy of Last =    " << c->getValue()+ " at " << c << endl;
 
 	cout << "Insert what? " << endl;
-	string x;
-	getline(cin, x);
+	string x = "neal";
+	// getline(cin, x);
 	theRest = head->insertFirst(theRest, x);
 	theRest = head->insertLast(theRest, x);
 	printMe(theRest);

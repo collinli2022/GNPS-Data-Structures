@@ -144,7 +144,7 @@ ListNode* ListNode::insertLast(ListNode* head, string arg) {
 
 ListNode* ListNode::insertMiddle(ListNode* theRest, string y, int position) {
   if(position < 0 || position > theRest->length(theRest)) { // out of bounds; position CAN be equal to length() because adding an index
-    cout << "ERROR: Index of of Bounds" << endl; 
+    cout << "ERROR: Index out of Bounds" << endl; 
     return theRest;
   }
 
