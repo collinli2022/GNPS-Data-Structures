@@ -143,54 +143,56 @@ ListNode* ListNode::insertLast(ListNode* head, string arg) {
 }
 
 ListNode* ListNode::insertMiddle(ListNode* theRest, string y, int position) {
-  if(position < 0 || position >= theRest->length(theRest)) { // out of bounds
+  if(position < 0 || position > theRest->length(theRest)) { // out of bounds; position CAN be equal to length() because adding an index
     cout << "ERROR: Index of of Bounds" << endl; 
     return theRest;
   }
   
   ListNode* beforeInsert = theRest;
+  // traverse the list until it is pointing to the node before where the new node will be inserted (currentNode)
   for(int i = 0; i < position-1; i++) { // position-1 because we want the insertedNode to be at that position
     if(beforeInsert->next != NULL) {
       beforeInsert = beforeInsert->next;
     } else {
-      cout << "ERROR" << endl;
+      cout << "ERROR: Index out of Bounds" << endl; 
     }
   }
 
-  ListNode* insertedNode = new ListNode(y, beforeInsert->next);
-  beforeInsert->next = insertedNode;
+  ListNode* insertedNode = new ListNode(y, beforeInsert->next); // Set nextNode reference of the new Node to point to the current first node of the linked list
+  beforeInsert->next = insertedNode; // Change the reference to the original first node of the list so that it now points to the new node
   
   return theRest;
 }
 
 ListNode* ListNode::remove(ListNode* theRest, int position) {
-  if(position < 0 || position >= theRest->length(theRest)) { // out of bounds
-    cout << "ERROR: Index of of Bounds" << endl; 
+  if(position < 0 || position >= theRest->length(theRest)) { // position out of bounds
+    cout << "ERROR: Index out of Bounds" << endl;
     return theRest;
   }
 
-  if(position == 0) {
-    if(theRest == NULL) {
+  if(position == 0) { // hard code first case
+    if(theRest == NULL) { // if List is empty return NULL
       return NULL;
     } else {
-      return theRest->next;
+      ListNode* secondNode = theRest->next; // Set the reference to the first node to point to the second node
+      theRest->next = nullptr; // Set the nextNode reference of oldNode to null
+      return secondNode;
     }
   }
 
   ListNode* beforeDelete = theRest;
-  for(int i = 0; i < position-1; i++) { // go to position before to reset the next pointer
+  for(int i = 0; i < position-1; i++) { // Traverse list; go to node before (position-1)
     if(beforeDelete->next != NULL) {
       beforeDelete = beforeDelete->next;
     } else {
-      cout << "ERROR" << endl;
+      cout << "ERROR: Index out of Bounds" << endl; 
     }
   }
   
-  if(beforeDelete->next != NULL) {
+  if(beforeDelete->next != NULL) { // last check to make sure desired node to be deleted is not NULL
     ListNode* temp = beforeDelete->next->next; // store pointer to node after deleted node
     beforeDelete->next->next = nullptr; // set deleted node's next to be null
-    delete beforeDelete->next->next;
-    beforeDelete->next = temp;
+    beforeDelete->next = temp; // Change the nextNode pointer of previousNode to point to the node after currentNode
     temp = nullptr;
     delete temp;
   }
