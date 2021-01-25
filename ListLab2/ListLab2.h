@@ -190,13 +190,11 @@ ListNode* ListNode::remove(ListNode* theRest, int position) {
   }
   
   if(beforeDelete->next != NULL) { // last check to make sure desired node to be deleted is not NULL
-    ListNode* temp = beforeDelete->next->next; // store pointer to node after deleted node
-    beforeDelete->next->next = nullptr; // set deleted node's next to be null
-    beforeDelete->next = nullptr;
-    delete beforeDelete->next;
-    beforeDelete->next = temp; // Change the nextNode pointer of previousNode to point to the node after currentNode
-    temp = nullptr;
-    delete temp;
+    ListNode* toDelete = beforeDelete->next;
+    beforeDelete->next = toDelete->next; // Change the nextNode pointer of previousNode to point to the node after currentNode
+    toDelete->next = nullptr; // set deleted node's next to be null
+    toDelete = nullptr; // set deleted null to be next
+    delete toDelete;
   }
   
   return theRest;
