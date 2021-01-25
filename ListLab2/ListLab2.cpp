@@ -4,15 +4,15 @@ using namespace std;
 
 void printMe(ListNode* head)
 {
-	cout << "[";
-	while(head != NULL)
-	{
-		 cout << head->getValue();
-		 head = head->getNext();
-		 if(head != NULL)
-			 cout << ", ";
-	}
-	cout << "]" << endl;
+    cout << "[";
+    while(head != NULL)
+    {
+         cout << head->getValue() << " (" << head << ")";
+         head = head->getNext();
+         if(head != NULL)
+             cout << ", ";
+    }
+    cout << "]" << endl;
 }
 
 int main()

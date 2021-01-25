@@ -147,6 +147,10 @@ ListNode* ListNode::insertMiddle(ListNode* theRest, string y, int position) {
     cout << "ERROR: Index of of Bounds" << endl; 
     return theRest;
   }
+
+  if(position == 0) {
+    return new ListNode(y, theRest);
+  }
   
   ListNode* beforeInsert = theRest;
   // traverse the list until it is pointing to the node before where the new node will be inserted (currentNode)
