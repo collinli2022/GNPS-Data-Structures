@@ -52,17 +52,21 @@ int main()
 	printMe(theRest);
 	
 	cout << "Insert what else?" << endl;
-	string y;
-	getline(cin, y);
+	string y = "collin";
+	//getline(cin, y);
 	cout << "Insert where?" << endl;
-	int position;
-	cin >> position;
+	int position = 4;
+	//cin >> position;
 	theRest = head->insertMiddle(theRest, y, position);
 	printMe(theRest);
 	
 	cout << "Remove which element?" << endl;
 	cin >> position;
 	theRest = head->remove(theRest, position);
+	printMe(theRest);
+  theRest = head->remove(theRest, position);
+	printMe(theRest);
+  theRest = head->remove(theRest, position);
 	printMe(theRest);
 	
 	return 0;
