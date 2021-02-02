@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include <fstream>
+#include<bits/stdc++.h> 
 using namespace std;
 
 class ListNode {
@@ -24,11 +25,14 @@ class ListNode {
 
     // Setters
     void addAppear(int add=1);
+
+    // print List
+    void printMe(ListNode* head); 
 		
 		~ListNode() { // deconstructor that deletes pointer
       next = nullptr;
       delete next;
-      } 
+    } 
 };
 
 ListNode::ListNode(string a, ListNode* b) { // sets string and pointer
@@ -48,40 +52,54 @@ ListNode* ListNode::add(ListNode* head, string word) {
   // 1 - means found node with same string word
   // 2 - means need to add node at beginning or in middle
   int operation = 0; 
-  while(pos != NULL) { // iterate through Linked List to find right index
-    if(pos.getValue() == word) {
-      pos.addAppear();
+  while(pos->next != NULL) { // iterate through Linked List to find right index
+    if(pos->getValue() == word) {
+      pos->addAppear();
       operation = 1;
       break;
-    } else if(word > pos.getValue()) { // keep going down list
+    } else if(word > pos->getValue()) { // keep going down list
       before = pos;
       pos = pos->next;
     } else {
-      
+      operation = 2;
       break;
     }
   }
-
+  
   if(operation == 0) {
-
+    ListNode* newNode = new ListNode(word, NULL);
+    pos->next = newNode;
   } else if(operation == 2) {
     if(before != NULL) { // need to add new node in middle
         ListNode* newNode = new ListNode(word, before->next);
         before->next = newNode;
     } else { // need to add new node in beginning
-
+        ListNode* newNode = new ListNode(word, head);
+        return newNode;
     }
   }
 
+  cout << operation << endl;
+  cout << word;
+
   return head;
-  
-
-  
-
 }
 
 void ListNode::addAppear(int add) {
   appear += add;
+}
+
+void ListNode::printMe(ListNode* head)
+{
+    cout << "[";
+    while(head != NULL)
+    {
+         cout << head->getValue() << " (" << head << ")";
+         head = head->getNext();
+         if(head != NULL)
+             cout << ", ";
+    }
+    cout << "]" << endl;
 }
 
 /*
@@ -97,19 +115,32 @@ int main () {
   cin >> fileName;
   fileName += ".txt";
 
-  cout << "Enter word to search: ";
-  string find;
-  cin >> find;
+  ListNode* words = new ListNode(); 
 
   string line;
   ifstream myfile (fileName);
   if (myfile.is_open()) {
-    while ( getline (myfile,line) ) {
-      line = transform(sl.begin(), sl.end(), sl.begin(), ::tolower); // to lower case
+    while ( getline (myfile, line) ) {
+      transform(line.begin(), line.end(), line.begin(), ::tolower); // to lower case
+      
+      // Used to split string around spaces.
+      istringstream ss(line);
+ 
+      string word; // for storing each word
+     
+      // Traverse through all words
+      // while loop till we get 
+      // strings to store in string word
+      while (ss >> word) {
+        words->add(words, word);
+      }
       cout << line << '\n';
     }
       myfile.close();
-    }
-  else { cout << "Unable to open file"; }
+
+      words->printMe(words);
+
+
+    } else { cout << "Unable to open file"; }
   return 0;
 }
