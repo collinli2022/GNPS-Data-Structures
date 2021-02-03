@@ -21,10 +21,8 @@ class ListNode {
 
 		// Getters
 		string getValue() { return value; }
+    int getAppear() { return appear; }
 		ListNode* getNext() { return next; }
-
-    // Setters
-    void addAppear(int add=1);
 
     // print List
     void printMe(ListNode* head); 
@@ -42,9 +40,12 @@ ListNode::ListNode(string a, ListNode* b) { // sets string and pointer
 }
 
 ListNode* ListNode::add(ListNode* head, string word) {
-  // add word to linked list
+  if(value == " ") { // this List is empty so just make this node the head
+    cout << "START" << endl;
+    value = word;
+    return head;
+  }
 
-  // find alphabetical position
   ListNode* pos = head;
   ListNode* before = NULL;
 
@@ -52,23 +53,25 @@ ListNode* ListNode::add(ListNode* head, string word) {
   // 1 - means found node with same string word
   // 2 - means need to add node at beginning or in middle
   int operation = 0; 
-  while(pos->next != NULL) { // iterate through Linked List to find right index
-    if(pos->getValue() == word) {
-      pos->addAppear();
-      operation = 1;
-      break;
-    } else if(word > pos->getValue()) { // keep going down list
+  while(pos!= NULL) { // iterate through Linked List to find right index
+    int x = word.compare(pos->getValue());
+    // cout << " : " << word << "_" << pos->getValue() << x;
+    if(x > 0) { // keep going down list
       before = pos;
       pos = pos->next;
-    } else {
+    } else if(x < 0) { // put right before pos node
       operation = 2;
+      break;
+    } else { // equal
+      pos->appear = pos->getAppear() + 1;
+      operation = 1;
       break;
     }
   }
   
   if(operation == 0) {
     ListNode* newNode = new ListNode(word, NULL);
-    pos->next = newNode;
+    before->next = newNode;
   } else if(operation == 2) {
     if(before != NULL) { // need to add new node in middle
         ListNode* newNode = new ListNode(word, before->next);
@@ -79,22 +82,18 @@ ListNode* ListNode::add(ListNode* head, string word) {
     }
   }
 
-  cout << operation << endl;
-  cout << word;
+  cout << word << operation << endl;
 
   return head;
 }
 
-void ListNode::addAppear(int add) {
-  appear += add;
-}
 
 void ListNode::printMe(ListNode* head)
 {
     cout << "[";
     while(head != NULL)
     {
-         cout << head->getValue() << " (" << head << ")";
+         cout << head->getValue() << " (" << head->appear << ")";
          head = head->getNext();
          if(head != NULL)
              cout << ", ";
@@ -133,12 +132,12 @@ int main () {
       // strings to store in string word
       while (ss >> word) {
         words->add(words, word);
+        words->printMe(words);
       }
-      cout << line << '\n';
     }
       myfile.close();
 
-      words->printMe(words);
+      
 
 
     } else { cout << "Unable to open file"; }
