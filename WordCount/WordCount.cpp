@@ -26,6 +26,7 @@ class ListNode {
 
     // print List
     void printMe(ListNode* head); 
+    void toTXT(ListNode* head, string output="result");
 		
 		~ListNode() { // deconstructor that deletes pointer
       next = nullptr;
@@ -88,8 +89,7 @@ ListNode* ListNode::add(ListNode* head, string word) {
 }
 
 
-void ListNode::printMe(ListNode* head)
-{
+void ListNode::printMe(ListNode* head) {
     cout << "[";
     while(head != NULL)
     {
@@ -99,6 +99,18 @@ void ListNode::printMe(ListNode* head)
              cout << ", ";
     }
     cout << "]" << endl;
+}
+
+void ListNode::toTXT(ListNode* head, string output) {
+  output += ".txt";
+  ofstream myfile;
+  myfile.open (output);
+
+  while(head != NULL) {
+    myfile << head->getValue() << " (" << head->appear << ")";
+  }
+
+  myfile.close();
 }
 
 /*
@@ -135,11 +147,9 @@ int main () {
         words->printMe(words);
       }
     }
-      myfile.close();
+    myfile.close();
 
-      
-
-
+    words->toTXT(words);
     } else { cout << "Unable to open file"; }
   return 0;
 }
