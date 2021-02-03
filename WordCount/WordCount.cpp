@@ -19,6 +19,8 @@ class ListNode {
 		//adds word to Linked List and if there is duplicate then add to number of times repeated
 		ListNode* add(ListNode* head, string word);
 
+    ListNode* removeFirstNode(ListNode* head);
+
 		// Getters
 		string getValue() { return value; }
     int getAppear() { return appear; }
@@ -83,11 +85,14 @@ ListNode* ListNode::add(ListNode* head, string word) {
     }
   }
 
-  cout << word << operation << endl;
-
   return head;
 }
 
+ListNode* ListNode::removeFirstNode(ListNode* head) {
+  ListNode* secondNode = head->next; // Set the reference to the first node to point to the second node
+  head->next = nullptr; // Set the nextNode reference of oldNode to null
+  return secondNode;
+}
 
 void ListNode::printMe(ListNode* head) {
     cout << "[";
@@ -107,7 +112,8 @@ void ListNode::toTXT(ListNode* head, string output) {
   myfile.open (output);
 
   while(head != NULL) {
-    myfile << head->getValue() << " (" << head->appear << ")";
+    myfile << head->getValue() << " (" << head->appear << ")\n";
+    head = head->getNext();
   }
 
   myfile.close();
@@ -144,12 +150,17 @@ int main () {
       // strings to store in string word
       while (ss >> word) {
         words->add(words, word);
-        words->printMe(words);
       }
     }
-    myfile.close();
 
-    words->toTXT(words);
+    // remove first Node which has a value of ""
+    if(words->getNext() != NULL) {
+      words = words->removeFirstNode(words);
+      words->printMe(words);
+      words->toTXT(words);
+    }
+
+    myfile.close();
     } else { cout << "Unable to open file"; }
   return 0;
 }
