@@ -8,25 +8,28 @@
 #include<bits/stdc++.h> 
 using namespace std;
 
+// Linked Lists to store the words
 class ListNode {
 	private:
-		string value;
+		string value; // store the word
 		ListNode* next;
-    int appear;
+    int appear; // store the number of times appear
 	public:
 		ListNode(string a="", ListNode* b=NULL);
 		
 		//adds word to Linked List and if there is duplicate then add to number of times repeated
 		ListNode* add(ListNode* head, string word);
 
+    /* // Not really needed
     ListNode* removeFirstNode(ListNode* head);
+    */
 
 		// Getters
 		string getValue() { return value; }
     int getAppear() { return appear; }
 		ListNode* getNext() { return next; }
 
-    // print List
+    // print list
     void printMe(ListNode* head); 
     void toTXT(ListNode* head, string output="result");
 		
@@ -36,86 +39,77 @@ class ListNode {
     } 
 };
 
-ListNode::ListNode(string a, ListNode* b) { // sets string and pointer
+ListNode::ListNode(string a, ListNode* b) { // sets string and pointer and appear
 	value = a; 
 	next = b;
   appear = 1;
 }
 
 ListNode* ListNode::add(ListNode* head, string word) {
-  if(value == " ") { // this List is empty so just make this node the head
-    cout << "START" << endl;
-    value = word;
-    return head;
-  }
-
-  ListNode* pos = head;
-  ListNode* before = NULL;
+  ListNode* pos = head; 
+  ListNode* before = NULL; // will store the previous node
 
   // 0 - means need to add new Node to end
   // 1 - means found node with same string word
   // 2 - means need to add node at beginning or in middle
   int operation = 0; 
-  while(pos!= NULL) { // iterate through Linked List to find right index
+  while(pos != NULL) { // iterate through Linked List to find right index
     int x = word.compare(pos->getValue());
-    // cout << " : " << word << "_" << pos->getValue() << x;
-    if(x > 0) { // keep going down list
+    if(x > 0) { // keep going down list since word is later
       before = pos;
       pos = pos->next;
     } else if(x < 0) { // put right before pos node
       operation = 2;
       break;
-    } else { // equal
-      pos->appear = pos->getAppear() + 1;
+    } else { // same word
+      pos->appear = pos->getAppear() + 1; // increase appear
       operation = 1;
       break;
     }
   }
   
-  if(operation == 0) {
+  if(operation == 0) { // add new node to end
     ListNode* newNode = new ListNode(word, NULL);
-    before->next = newNode;
-  } else if(operation == 2) {
+    before->next = newNode; // pos is NULL so before is last Node
+  } else if(operation == 2) { // add node beginning or middle of list
     if(before != NULL) { // need to add new node in middle
-        ListNode* newNode = new ListNode(word, before->next);
-        before->next = newNode;
+      ListNode* newNode = new ListNode(word, before->next);
+      before->next = newNode;
     } else { // need to add new node in beginning
-        ListNode* newNode = new ListNode(word, head);
-        return newNode;
+      ListNode* newNode = new ListNode(word, head);
+      return newNode;
     }
   }
 
   return head;
 }
 
+/*
 ListNode* ListNode::removeFirstNode(ListNode* head) {
   ListNode* secondNode = head->next; // Set the reference to the first node to point to the second node
   head->next = nullptr; // Set the nextNode reference of oldNode to null
   return secondNode;
 }
+*/
 
-void ListNode::printMe(ListNode* head) {
+void ListNode::printMe(ListNode* head) { // for debugging purposes
     cout << "[";
-    while(head != NULL)
-    {
+    while(head != NULL) {
          cout << head->getValue() << " (" << head->appear << ")";
          head = head->getNext();
-         if(head != NULL)
-             cout << ", ";
+         if(head != NULL) { cout << ", "; };
     }
     cout << "]" << endl;
 }
 
-void ListNode::toTXT(ListNode* head, string output) {
+void ListNode::toTXT(ListNode* head, string output) { // output text file
   output += ".txt";
   ofstream myfile;
   myfile.open (output);
-
-  while(head != NULL) {
-    myfile << head->getValue() << " (" << head->appear << ")\n";
+  while(head != NULL) { // Traverse through linked list and outputing each word and occurance
+    myfile << head->getValue() << " " << head->appear << "\n";
     head = head->getNext();
   }
-
   myfile.close();
 }
 
@@ -126,38 +120,37 @@ Write a program called WordCount that first prompts the user for the name of a f
 
 int main () {
   // first prompts the user for the name of a file
-  cout << "program starting..." << endl;
   cout << "Enter the name of the file: ";
   string fileName;
   cin >> fileName;
-  fileName += ".txt";
+  fileName += ".txt"; ASK IF Mrs.ZINN wants to enter the .txt or not
 
-  ListNode* words = new ListNode(); 
+  ListNode* words = NULL; // will represent head of linked list containing words
 
   string line;
   ifstream myfile (fileName);
-  if (myfile.is_open()) {
-    while ( getline (myfile, line) ) {
+  if (myfile.is_open()) { // open file
+    while ( getline (myfile, line) ) { // get lines
       transform(line.begin(), line.end(), line.begin(), ::tolower); // to lower case
       
-      // Used to split string around spaces.
-      istringstream ss(line);
+      istringstream ss(line); // Used to split string around spaces.
  
       string word; // for storing each word
      
-      // Traverse through all words
-      // while loop till we get 
-      // strings to store in string word
-      while (ss >> word) {
-        words->add(words, word);
+      while (ss >> word) { // loop through all words in line
+        if(words == NULL) { // if Linked List is empty, add first word
+          words = new  ListNode(word);
+        } else { // add word
+          words->add(words, word);
+        }
       }
     }
 
-    // remove first Node which has a value of ""
-    if(words->getNext() != NULL) {
-      words = words->removeFirstNode(words);
-      words->printMe(words);
+    if(words->getNext() != NULL) { // make sure  Linked List is not empty
+      //words->printMe(words);
       words->toTXT(words);
+    } else {
+      cout << "Linked List is empty" << endl; // could be because nothing in input txt
     }
 
     myfile.close();
