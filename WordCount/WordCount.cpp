@@ -67,7 +67,7 @@ ListNode* ListNode::add(ListNode* head, string word) {
       break;
     }
   }
-  
+
   if(operation == 0) { // add new node to end
     ListNode* newNode = new ListNode(word, NULL);
     before->next = newNode; // pos is NULL so before is last Node
@@ -123,7 +123,6 @@ int main () {
   cout << "Enter the name of the file: ";
   string fileName;
   cin >> fileName;
-  fileName += ".txt"; ASK IF Mrs.ZINN wants to enter the .txt or not
 
   ListNode* words = NULL; // will represent head of linked list containing words
 
@@ -139,9 +138,9 @@ int main () {
      
       while (ss >> word) { // loop through all words in line
         if(words == NULL) { // if Linked List is empty, add first word
-          words = new  ListNode(word);
+          words = new ListNode(word);
         } else { // add word
-          words->add(words, word);
+          words = words->add(words, word);
         }
       }
     }
