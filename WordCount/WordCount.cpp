@@ -154,5 +154,7 @@ int main () {
 
     myfile.close();
     } else { cout << "Unable to open file"; }
+  words = nullptr;
+  delete words; // delete head pointer
   return 0;
 }
