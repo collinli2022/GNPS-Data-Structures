@@ -1,3 +1,3 @@
 language = "cpp"
 fileName = "WordCount"
-run = "clang++-7 -pthread -std=c++17 -o WordCount/WordCount WordCount/WordCount.cpp"
+run = "clang++-7 -pthread -std=c++17 -o ListLab3/ListLab3 ListLab3/Tester.cpp"
