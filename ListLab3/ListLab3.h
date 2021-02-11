@@ -18,7 +18,7 @@ Create ListLab3.h that demonstrates a doubly-linked list. Your file must include
 class ListNode {
 	private:
 		string value;
-		ListNode* before;
+		ListNode* previous;
 		ListNode* next;
     int length(ListNode* head); // helper method to get length of LinkedList
 	public:
@@ -27,7 +27,6 @@ class ListNode {
 		ListNode* copyNode(ListNode* arg);
 		
 		// returns a new list that is a copy of the original list.
-		// this method is recursive!
 		// example call: ListNode* head2 = head->copyList(head);
 		ListNode* copyList(ListNode* arg);
 		
@@ -59,23 +58,23 @@ class ListNode {
 		//that this last node has been appended to the original list and had its next is set to NULL
 		ListNode* addLast(ListNode* head, string arg);
 
-        //inserts a Node into LinkedList
-        ListNode* add(ListNode* theRest, string y, int position=0);
-    
-        //deletes a node from LinkedList
-        ListNode* remove(ListNode* theRest, int position=0);
+    //inserts a Node into LinkedList
+    ListNode* add(ListNode* theRest, string y, int position=0);
+
+    //deletes a node from LinkedList
+    ListNode* remove(ListNode* theRest, int position=0);
     		
-    	// Getters
-    	string getValue() { return value; }
-    	ListNode* getNext() { return next; }
-    	ListNode* getPrevious() { return before; }
-    	
-    	~ListNode() { delete next; } // deconstructor that deletes pointer
+    // Getters
+    string getValue() { return value; }
+    ListNode* getNext() { return next; }
+    ListNode* getPrevious() { return previous; }
+    
+    ~ListNode() { delete next; } // deconstructor that deletes pointer
 };
 
 ListNode::ListNode(string a, ListNode* b, ListNode* n) { // sets string and pointers
 	value = a;
-  before = b; 
+  previous = b; 
 	next = n;
 }
 
@@ -83,18 +82,23 @@ ListNode* ListNode::copyNode(ListNode* arg)  {
 	if(arg == NULL) { 
 		return NULL; // ends recursion if arg==NULL
 	}
-  ListNode* other = new ListNode(arg->value, arg->before, arg->next); // a new ListNode
+  ListNode* other = new ListNode(arg->value, arg->previous, arg->next); // a new ListNode
   return other;
 }
 
 ListNode* ListNode::copyList(ListNode* arg) {
 	if(arg == NULL) { // ends recursion
-        return NULL;
+    return NULL;
   }
-  ListNode* other = new ListNode(); // a new ListNode
-  other->value = arg->value; // same value
-  other->next = arg->copyList(arg->next); // pointer to next will point to a new ListNode with same value
-  return other;
+  ListNode* copyHead = copyNode(arg); // the new head
+  ListNode* copy = copyHead; // use to iterate through Linked List
+  while(copy->next != NULL) { // keep looping until end of Linked List
+    ListNode* temp = copyNode(copy->next); // make copy
+    temp->previous = copy; // assign previous of copy to be the correct previous
+    copy->next = temp; 
+    copy = copy->next;
+  }
+  return copyHead;
 }
 
 ListNode* ListNode::rest(ListNode* head) {
@@ -136,7 +140,7 @@ ListNode* ListNode::copyOfLast(ListNode* head) {
 
 ListNode* ListNode::addFirst(ListNode* head, string arg) {
 	ListNode* newNode = new ListNode(arg, NULL, head); // creates new node with (string) value of arg & takes place as the head by linking this node's next to the origianl head
-	head->before = newNode;
+	head->previous = newNode;
 	return newNode;
 }
 
@@ -174,7 +178,7 @@ ListNode* ListNode::add(ListNode* theRest, string y, int position) {
   ListNode* insertedNode = new ListNode(y, beforeInsert, beforeInsert->next); // Set nextNode reference of the new Node to point to the current first node of the linked list
   beforeInsert->next = insertedNode; // Change the reference to the original first node of the list so that it now points to the new node
   if(insertedNode->next != NULL) {
-    insertedNode->next->before = insertedNode;
+    insertedNode->next->previous = insertedNode;
   }
   
   return theRest;
@@ -190,7 +194,7 @@ ListNode* ListNode::remove(ListNode* theRest, int position) {
     } else {
       ListNode* secondNode = theRest->next; // Set the reference to the first node to point to the second node
       theRest->next = nullptr; // Set the nextNode reference of oldNode to null
-      secondNode->before = nullptr;
+      secondNode->previous = nullptr;
       return secondNode;
     }
   }
@@ -213,9 +217,9 @@ ListNode* ListNode::remove(ListNode* theRest, int position) {
     ListNode* toDelete = beforeDelete->next;
     beforeDelete->next = toDelete->next; // Change the nextNode pointer of previousNode to point to the node after currentNode
     if(toDelete->next != NULL) {
-      toDelete->next->before = beforeDelete;
+      toDelete->next->previous = beforeDelete;
     }
-    toDelete->before = nullptr;
+    toDelete->previous = nullptr;
     toDelete->next = nullptr; // set deleted node's next to be null
     toDelete = nullptr; // set deleted null to be next
     delete toDelete;
