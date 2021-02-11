@@ -6,6 +6,7 @@
 // Preprocessor directive
 #include <iostream>
 #include <string>
+#include <sstream> // new include for ostringstream
 using namespace std;
 
 // header guards
@@ -238,6 +239,18 @@ int ListNode::length(ListNode* head) {
   copy = nullptr;
   delete copy; // delete pointer
   return count;
+}
+
+ostream& operator << (ostream& os, ListNode* head) {
+  string returnStr = "[";
+  while(head != NULL) {
+    returnStr += head->getValue();
+    head = head->getNext();
+    if(head != NULL)
+        returnStr += ", ";
+  }
+  returnStr += "]";
+	return os << returnStr;
 }
 
 #endif
