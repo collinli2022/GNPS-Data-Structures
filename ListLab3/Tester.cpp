@@ -13,13 +13,13 @@ void printComplex(ListNode* head)
 	while(head != NULL)
 	{
     if (head->getPrevious() == NULL && head->getNext() == NULL)
-		  cout << head << ":\t" << head->getValue() << "\t(Next: NULL     \t& Previous: NULL)";
+		  cout << (void *)head << ":\t" << head->getValue() << "\t(Next: NULL     \t& Previous: NULL)";
     else if (head->getPrevious() == NULL)
-		  cout << head << ":\t" << head->getValue() << "\t(Next: " << head->getNext() << "\t& Previous: NULL)";
+		  cout << (void *)head << ":\t" << head->getValue() << "\t(Next: " << (void *)head->getNext() << "\t& Previous: NULL)";
     else if (head->getNext() == NULL)
-		  cout << head << ":\t" << head->getValue() << "\t(Next: NULL     \t& Previous: " << head->getPrevious() << ")";
+		  cout << (void *)head << ":\t" << head->getValue() << "\t(Next: NULL     \t& Previous: " << (void *)head->getPrevious() << ")";
     else
-		  cout << head << ":\t" << head->getValue() << "\t(Next: " << head->getNext() << "\t& Previous: " << head->getPrevious() << ")";
+		  cout << (void *)head << ":\t" << head->getValue() << "\t(Next: " << (void *)head->getNext() << "\t& Previous: " << (void *)head->getPrevious() << ")";
 		head = head->getNext();
 		if(head == NULL)
       cout << "]" << endl << endl;
@@ -27,6 +27,7 @@ void printComplex(ListNode* head)
 		  cout << "," << endl;
 	}
 }
+/*
 int main()
 {
  
@@ -81,9 +82,6 @@ int main()
     //printComplex(head);
   cout << head << endl << endl;
 
-  head = head->remove(head);
-  head = head->remove(head);
-  head = head->remove(head);
   //printComplex(head);
   cout << head << endl << endl;
 
@@ -93,11 +91,11 @@ int main()
 
   return 0;
 }
-/*
+*/
+
 int main()
 {
   ListNode* head = new ListNode("base", NULL, NULL);
-  (head);
   head = head->add(head, "added");
   printComplex(head);
   head = head->add(head, "filler", 2);
@@ -148,4 +146,3 @@ int main()
 
   return 0;
 }
-*/

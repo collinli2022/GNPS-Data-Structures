@@ -6,7 +6,6 @@
 // Preprocessor directive
 #include <iostream>
 #include <string>
-#include <sstream> // new include for ostringstream
 using namespace std;
 
 // header guards
@@ -16,6 +15,7 @@ using namespace std;
 /*
 Create ListLab3.h that demonstrates a doubly-linked list. Your file must include methods to add a node at the beginning or specified position of the list (called add...no parameter is beginning; parameter is position) and remove a node at the beginning or specified position of the list (called remove; same information as above). Standard rules apply for formatting and usability. 4 points for documentation, 4 points for user-friendliness, 20 points for the required methods. You must also include operators for displaying your list when printed with cout.
 */
+
 class ListNode {
 	private:
 		string value;
@@ -34,7 +34,7 @@ class ListNode {
 		//returns a new linked list containing copies of each node in
 		//the original list except the first node, maintaining the
 		//order of the original list. It is not correct to just
-		//return a pointer to the 2 nd node of the original linked
+		//return a pointer to the 2nd node of the original linked
 		//list. This method is recursive.
 		ListNode* rest(ListNode* head);
 		
@@ -88,11 +88,9 @@ ListNode* ListNode::copyNode(ListNode* arg)  {
 }
 
 ListNode* ListNode::copyList(ListNode* arg) {
-	if(arg == NULL) { // ends recursion
-    return NULL;
-  }
+	if(arg == NULL) { return NULL; }
   ListNode* copyHead = copyNode(arg); // the new head
-  ListNode* copy = copyHead; // use to iterate through Linked List
+  ListNode* copy = copyHead; // use to traverse through Linked List
   while(copy->next != NULL) { // keep looping until end of Linked List
     ListNode* temp = copyNode(copy->next); // make copy
     temp->previous = copy; // assign previous of copy to be the correct previous
@@ -147,24 +145,20 @@ ListNode* ListNode::addFirst(ListNode* head, string arg) {
 
 ListNode* ListNode::addLast(ListNode* head, string arg) {
 	ListNode* last = head->pointerToLast(head); // gets the pointer to the last node
-	ListNode* newNode = new ListNode(arg, head->pointerToLast(head), NULL); // creates new node with (string) value of arg & this node's next is NULL
+	ListNode* newNode = new ListNode(arg, head->pointerToLast(head), NULL); // creates new node with (string) value of arg & this node's next is NULL & previous is original last node
 	last->next = newNode; // sets the origial last node to link with the new (last) node
 	return head;
 }
 
 ListNode* ListNode::add(ListNode* theRest, string y, int position) {
-  if(theRest == NULL) {
-      return new ListNode(y, NULL, NULL);
-  }
+  if(theRest == NULL) { return new ListNode(y, NULL, NULL); }
   
   if(position < 0 || position > theRest->length(theRest)) { // out of bounds; position CAN be equal to length() because adding an index
     cout << "ERROR: Index out of Bounds" << endl; 
     return theRest;
   }
 
-  if(position == 0) {
-    return theRest->addFirst(theRest, y);
-  }
+  if(position == 0) { return theRest->addFirst(theRest, y); }
   
   ListNode* beforeInsert = theRest;
   // traverse the list until it is pointing to the node before where the new node will be inserted (currentNode)
@@ -172,7 +166,8 @@ ListNode* ListNode::add(ListNode* theRest, string y, int position) {
     if(beforeInsert->next != NULL) {
       beforeInsert = beforeInsert->next;
     } else {
-      cout << "ERROR: Index out of Bounds" << endl; 
+      cout << "ERROR: Index out of Bounds" << endl;
+      return theRest;
     }
   }
 
@@ -191,10 +186,12 @@ ListNode* ListNode::remove(ListNode* theRest, int position) {
       return NULL;
     } else if(theRest->next == NULL) {
       theRest->next = nullptr;
+      theRest = nullptr;
       return NULL;
     } else {
       ListNode* secondNode = theRest->next; // Set the reference to the first node to point to the second node
       theRest->next = nullptr; // Set the nextNode reference of oldNode to null
+      theRest = nullptr;
       secondNode->previous = nullptr;
       return secondNode;
     }
@@ -225,7 +222,6 @@ ListNode* ListNode::remove(ListNode* theRest, int position) {
     toDelete = nullptr; // set deleted null to be next
     delete toDelete;
   }
-  
   return theRest;
 }
 
