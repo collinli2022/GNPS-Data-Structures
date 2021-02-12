@@ -60,16 +60,17 @@ class ListNode {
 		ListNode* addLast(ListNode* head, string arg);
 
     //inserts a Node into LinkedList
+    ListNode* add(ListNode* theRest, ListNode* addition=new ListNode(), int position=0);
     ListNode* add(ListNode* theRest, string y, int position=0);
 
     //deletes a node from LinkedList
     ListNode* remove(ListNode* theRest, int position=0);
-    		
+
     // Getters
     string getValue() { return value; }
     ListNode* getNext() { return next; }
     ListNode* getPrevious() { return previous; }
-    
+
     ~ListNode() { delete next; } // deconstructor that deletes pointer
 };
 
@@ -148,6 +149,42 @@ ListNode* ListNode::addLast(ListNode* head, string arg) {
 	ListNode* newNode = new ListNode(arg, head->pointerToLast(head), NULL); // creates new node with (string) value of arg & this node's next is NULL & previous is original last node
 	last->next = newNode; // sets the origial last node to link with the new (last) node
 	return head;
+}
+
+ListNode* ListNode::add(ListNode* theRest, ListNode* addition, int position) { // alteration for add method
+    if(theRest == NULL) { return addition; }
+  
+  if(position < 0 || position > theRest->length(theRest)) { // out of bounds; position CAN be equal to length() because adding an index
+    cout << "ERROR: Index out of Bounds" << endl; 
+    return theRest;
+  }
+
+  if(position == 0) {
+      addition->next = theRest;
+      theRest->previous = addition;
+      return addition;
+  }
+  
+  ListNode* beforeInsert = theRest;
+  // traverse the list until it is pointing to the node before where the new node will be inserted (currentNode)
+  for(int i = 0; i < position-1; i++) { // position-1 because we want the insertedNode to be at that position
+    if(beforeInsert->next != NULL) {
+      beforeInsert = beforeInsert->next;
+    } else {
+      cout << "ERROR: Index out of Bounds" << endl;
+      return theRest;
+    }
+  }
+
+  // Set nextNode reference of the new Node to point to the current first node of the linked list
+  addition->previous = beforeInsert;
+  addition->next = beforeInsert->next;
+  beforeInsert->next = addition; // Change the reference to the original first node of the list so that it now points to the new node
+  if(addition->next != NULL) {
+    addition->next->previous = addition;
+  }
+  
+  return theRest;
 }
 
 ListNode* ListNode::add(ListNode* theRest, string y, int position) {
