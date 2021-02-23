@@ -23,7 +23,6 @@ class ListNode {
     string value;
     ListNode* previous;
     ListNode* next;
-    int length(ListNode* head); // helper method to get length of LinkedList
   public:
     ListNode(string a="", ListNode* b=NULL, ListNode* n=NULL);
     
@@ -72,6 +71,10 @@ class ListNode {
     string getValue() { return value; }
     ListNode* getNext() { return next; }
     ListNode* getPrevious() { return previous; }
+    int length(ListNode* head); // helper method to get length of LinkedList
+    
+    void printForward(ListNode* head);
+    void printBackward(ListNode* head);
 
     ~ListNode() { delete next; } // deconstructor that deletes pointer
 };
@@ -90,7 +93,8 @@ ListNode* ListNode::copyNode(ListNode* arg)  {
   return other;
 }
 
-ListNode* ListNode::copyList(ListNode* arg) {
+ListNode* ListNode::copyList(ListNode* arg) { // not needed for this assignment
+  /*
   if(arg == NULL) { return NULL; }
   ListNode* copyHead = copyNode(arg); // the new head
   ListNode* copy = copyHead; // use to traverse through Linked List
@@ -101,6 +105,8 @@ ListNode* ListNode::copyList(ListNode* arg) {
     copy = copy->next;
   }
   return copyHead;
+  */
+  return arg;
 }
 
 ListNode* ListNode::rest(ListNode* head) {
@@ -127,13 +133,16 @@ string ListNode::second(ListNode* head) {
   return noFirst->first(noFirst); // return the value of the second node (since the rest method removed the first node)
 }
 
-ListNode* ListNode::pointerToLast(ListNode* head) {
+ListNode* ListNode::pointerToLast(ListNode* head) { // not needed for this assignment
+  /*
   if(head == NULL) { // checks if NULL
     return NULL;
   } else if(head->next == NULL) { // makes sure next is not NULL and if it is, this is the last node
     return head;
   }
   return head->pointerToLast(head->next); // recursion (if head is not the last Node, keep going down the list)
+  */
+  return head;
 }
 
 ListNode* ListNode::copyOfLast(ListNode* head) {
@@ -151,25 +160,33 @@ ListNode* ListNode::addFirst(ListNode* head, string arg) {
   return newNode;
 }
 
-ListNode* ListNode::addLast(ListNode* head, string arg) {
+ListNode* ListNode::addLast(ListNode* head, string arg) { // not needed for this assignment
+  /*
   ListNode* last = head->pointerToLast(head); // gets the pointer to the last node
-  ListNode* newNode = new ListNode(arg, head->pointerToLast(head), head); // creates new node with (string) value of arg & this node's next is head & previous is original last node
+  ListNode* newNode = new ListNode(arg, last, head); // creates new node with (string) value of arg & this node's next is head & previous is original last node
   last->next = newNode; // sets the origial last node to link with the new (last) node
+  head->previous = newNode;
+  return head;
+  */
   return head;
 }
 
 ListNode* ListNode::add(ListNode* theRest, ListNode* addition, int position) { // alteration for add method
-    if(theRest == NULL) { return addition; }
+  if(theRest == NULL) { return addition; }
   
   if(position < 0 || position > theRest->length(theRest)) { // out of bounds; position CAN be equal to length() because adding an index
     cout << "ERROR: Index out of Bounds" << endl; 
     return theRest;
   }
 
-  if(position == 0) {
-      addition->next = theRest;
-      theRest->previous = addition;
-      return addition;
+  if(position == 0) { // length of list shoud be > 1
+    addition->next = theRest;
+    addition->previous = theRest->pointerToLast(theRest);
+    theRest->previous = addition;
+    if(theRest->next== NULL) {
+      theRest->next = addition;
+    }
+    return addition;
   }
   
   ListNode* beforeInsert = theRest;
@@ -189,6 +206,9 @@ ListNode* ListNode::add(ListNode* theRest, ListNode* addition, int position) { /
   beforeInsert->next = addition; // Change the reference to the original first node of the list so that it now points to the new node
   if(addition->next != NULL) {
     addition->next->previous = addition;
+  } else { // this is last node
+    addition->next = theRest;
+    theRest->previous = addition;
   }
   
   return theRest;
@@ -258,23 +278,72 @@ ListNode* ListNode::remove(ListNode* theRest, int position) {
 int ListNode::length(ListNode* head) {
   int count = 1; // will be counter - this node is the first node
   ListNode* copy = head;
-  while(head->next != NULL) { // keep looping until end of Linked List
+  if(copy != NULL) {
+    copy=copy->next;
+  } else {
+    return 0;
+  }
+  while(copy != NULL && copy != head) { // keep looping until end of Linked List
     count++; // add to counter
-    head=head->next; // move down the linked List
+    copy=copy->next; // move down the linked List
   }
   copy = nullptr;
   delete copy; // delete pointer
   return count;
 }
 
+void ListNode::printForward(ListNode* head) {
+  if(head == NULL) {
+    cout << "[NULL]" << endl;
+  } else if(head->next == NULL) {
+    cout << "[" << head->value << "]" << endl;
+  } else {
+    ListNode* orig = head;
+    string returnStr = "[";
+    do { // Traverse list
+      returnStr += head->value;
+      head = head->next;
+      if(head != NULL && orig != head)
+          returnStr += ", ";
+    } while(head != NULL && orig != head);
+    returnStr += "]";
+    cout << returnStr << endl;
+  }
+}
+
+void ListNode::printBackward(ListNode* head) {
+  if(head == NULL) {
+    cout << "[NULL]" << endl;
+  } else if(head->next == NULL) {
+    cout << "[" << head->value << "]" << endl;
+  } else {
+    ListNode* orig = head->getPrevious();
+    head = orig;
+    string returnStr = "[";
+    do { // Traverse list
+      returnStr += head->getValue();
+      head = head->getPrevious();
+      if(head != NULL && orig != head)
+          returnStr += ", ";
+    } while(head != NULL && orig != head);
+    returnStr += "]";
+    cout << returnStr << endl;
+  }
+ 
+}
+
 ostream& operator << (ostream& os, ListNode* head) { // similar to the printMe method
+  ListNode* orig = head;
   string returnStr = "[";
-  while(head != NULL) { // Traverse list
+  if(head == NULL) {
+    cout << "[NULL]" << endl;
+  }
+  do { // Traverse list
     returnStr += head->getValue();
     head = head->getNext();
     if(head != NULL)
         returnStr += ", ";
-  }
+  } while(head != NULL && orig != head);
   returnStr += "]";
   return os << returnStr; // return string kindof
 }
