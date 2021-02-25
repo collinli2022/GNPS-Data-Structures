@@ -179,13 +179,17 @@ ListNode* ListNode::add(ListNode* theRest, ListNode* addition, int position) { /
     return theRest;
   }
 
-  if(position == 0) { // length of list shoud be > 1
+  if(position == 0) { // length of list shoud be >= 1
     addition->next = theRest;
     addition->previous = theRest->pointerToLast(theRest);
-    theRest->previous = addition;
-    if(theRest->next== NULL) {
+    if(theRest->next == NULL) {
+      theRest->previous = addition;
       theRest->next = addition;
-    }
+    } else {
+      theRest->previous->next = addition;
+      theRest->previous = addition;
+    } 
+
     return addition;
   }
   
@@ -314,7 +318,7 @@ void ListNode::printForward(ListNode* head) {
 void ListNode::printBackward(ListNode* head) {
   if(head == NULL) {
     cout << "[NULL]" << endl;
-  } else if(head->next == NULL) {
+  } else if(head->previous == NULL) {
     cout << "[" << head->value << "]" << endl;
   } else {
     ListNode* orig = head->getPrevious();
