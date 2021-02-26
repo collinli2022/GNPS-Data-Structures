@@ -73,11 +73,9 @@ int main()
   cout << head << "(cout)" << endl << endl;
   
   cout << "Add what?" << endl;
-	string y;
-  cin >> y;
+	string y = "neal";
 	cout << "Add where?" << endl;
-	int position;
-	cin >> position;
+	int position =3;
   head = head->add(head, y, position);
   printComplex(head);
   head->printForward(head);
