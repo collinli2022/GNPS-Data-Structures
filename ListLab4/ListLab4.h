@@ -23,8 +23,10 @@ class ListNode {
     string value;
     ListNode* previous;
     ListNode* next;
+
+    int length(ListNode* head); // helper method to get length of LinkedList
   public:
-    ListNode(string a="", ListNode* b=NULL, ListNode* n=NULL);
+    ListNode(string a="", ListNode* b=NULL, ListNode* n=NULL); // constructor
 
     //inserts a Node into LinkedList
     ListNode* add(ListNode* theRest, ListNode* addition=new ListNode(), int position=0);
@@ -37,7 +39,6 @@ class ListNode {
     string getValue() { return value; }
     ListNode* getNext() { return next; }
     ListNode* getPrevious() { return previous; }
-    int length(ListNode* head); // helper method to get length of LinkedList
     
     void printForward(ListNode* head);
     void printBackward(ListNode* head);
@@ -59,14 +60,14 @@ ListNode* ListNode::add(ListNode* theRest, ListNode* addition, int position) { /
     return theRest;
   }
 
-  if(position == 0) { // length of list shoud be >= 1
+  if(position == 0) { // hard code case
     addition->next = theRest;
     addition->previous = theRest->previous;
-    if(theRest->next == NULL) {
+    if(theRest->next == NULL) { // length of list is 1
       theRest->previous = addition;
       theRest->next = addition;
       addition->previous = theRest;
-    } else {
+    } else { // length of list is > 1
       theRest->previous->next = addition;
       theRest->previous = addition;
     } 
@@ -99,7 +100,7 @@ ListNode* ListNode::add(ListNode* theRest, ListNode* addition, int position) { /
   return theRest;
 }
 
-ListNode* ListNode::add(ListNode* theRest, string y, int position) {
+ListNode* ListNode::add(ListNode* theRest, string y, int position) { // different type of add method call
   return theRest->add(theRest, new ListNode(y), position);
 }
 
@@ -119,6 +120,7 @@ ListNode* ListNode::remove(ListNode* theRest, int position) {
         theRest = nullptr;
         secondNode->previous = nullptr;
         secondNode->next = nullptr;
+        delete theRest;
         return secondNode;
       } else { // need to make sure new head node links to last node AND last node link to new head node 
         ListNode* secondNode = theRest->next; // Set the reference to the first node to point to the second node
@@ -127,6 +129,7 @@ ListNode* ListNode::remove(ListNode* theRest, int position) {
         theRest->next = nullptr; // Set the nextNode reference of oldNode to null
         theRest->previous = nullptr;
         theRest = nullptr;
+        delete theRest;
         return secondNode;
       }      
     }
@@ -178,38 +181,36 @@ int ListNode::length(ListNode* head) {
 }
 
 void ListNode::printForward(ListNode* head) {
-  if(head == NULL) {
+  if(head == NULL) { // if null then print null
     cout << "[NULL]" << endl;
-  } else if(head->next == NULL) {
+  } else if(head->next == NULL) { // if only one node then print that node
     cout << "[" << head->value << "]" << endl;
   } else {
-    ListNode* orig = head;
+    ListNode* orig = head; // starting point
     string returnStr = "[";
     do { // Traverse list
       returnStr += head->value;
-      head = head->next;
-      if(head != NULL && orig != head)
-          returnStr += ", ";
-    } while(head != NULL && orig != head);
+      head = head->next; // go fowards
+      if(head != NULL && orig != head) { returnStr += ", "; }
+    } while(head != NULL && orig != head); // when return to starting point end
     returnStr += "]";
     cout << returnStr << endl;
   }
 }
 
 void ListNode::printBackward(ListNode* head) {
-  if(head == NULL) {
+  if(head == NULL) { // if null then print null
     cout << "[NULL]" << endl;
-  } else if(head->previous == NULL) {
+  } else if(head->previous == NULL) { // if only one node then print that node
     cout << "[" << head->value << "]" << endl;
   } else {
-    ListNode* orig = head;
+    ListNode* orig = head; // starting point
     string returnStr = "[";
     do { // Traverse list
       returnStr += head->value;
-      head = head->previous;
-      if(head != NULL && orig != head)
-          returnStr += ", ";
-    } while(head != NULL && orig != head);
+      head = head->previous; // go backwards
+      if(head != NULL && orig != head) { returnStr += ", "; }
+    } while(head != NULL && orig != head); // when return to starting point end
     returnStr += "]";
     cout << returnStr << endl;
   }
