@@ -181,10 +181,11 @@ ListNode* ListNode::add(ListNode* theRest, ListNode* addition, int position) { /
 
   if(position == 0) { // length of list shoud be >= 1
     addition->next = theRest;
-    addition->previous = theRest->pointerToLast(theRest);
+    addition->previous = theRest->previous;
     if(theRest->next == NULL) {
       theRest->previous = addition;
       theRest->next = addition;
+      addition->previous = theRest;
     } else {
       theRest->previous->next = addition;
       theRest->previous = addition;
@@ -321,34 +322,36 @@ void ListNode::printBackward(ListNode* head) {
   } else if(head->previous == NULL) {
     cout << "[" << head->value << "]" << endl;
   } else {
-    ListNode* orig = head->getPrevious();
-    head = orig;
+    ListNode* orig = head;
     string returnStr = "[";
     do { // Traverse list
-      returnStr += head->getValue();
-      head = head->getPrevious();
+      returnStr += head->value;
+      head = head->previous;
       if(head != NULL && orig != head)
           returnStr += ", ";
     } while(head != NULL && orig != head);
     returnStr += "]";
     cout << returnStr << endl;
   }
- 
 }
 
 ostream& operator << (ostream& os, ListNode* head) { // similar to the printMe method
-  ListNode* orig = head;
-  string returnStr = "[";
+  string returnStr = "";
   if(head == NULL) {
-    cout << "[NULL]" << endl;
+    returnStr = "[NULL]";
+  } else if(head->getNext() == NULL) {
+    returnStr = "[" + head->getValue() + "]";
+  } else {
+    ListNode* orig = head;
+    returnStr = "[";
+    do { // Traverse list
+      returnStr += head->getValue();
+      head = head->getNext();
+      if(head != NULL && orig != head)
+          returnStr += ", ";
+    } while(head != NULL && orig != head);
+    returnStr += "]";
   }
-  do { // Traverse list
-    returnStr += head->getValue();
-    head = head->getNext();
-    if(head != NULL)
-        returnStr += ", ";
-  } while(head != NULL && orig != head);
-  returnStr += "]";
   return os << returnStr; // return string kindof
 }
 
