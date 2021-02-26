@@ -25,40 +25,6 @@ class ListNode {
     ListNode* next;
   public:
     ListNode(string a="", ListNode* b=NULL, ListNode* n=NULL);
-    
-    ListNode* copyNode(ListNode* arg);
-    
-    // returns a new list that is a copy of the original list.
-    // example call: ListNode* head2 = head->copyList(head);
-    ListNode* copyList(ListNode* arg);
-    
-    //returns a new linked list containing copies of each node in
-    //the original list except the first node, maintaining the
-    //order of the original list. It is not correct to just
-    //return a pointer to the 2nd node of the original linked
-    //list. This method is recursive.
-    ListNode* rest(ListNode* head);
-    
-    // returns the value of the first node, or NULL if the list is empty
-    string first(ListNode* head);
-    
-    // returns the value of the second node, or NULL if the list is empty or if there is only one node.
-    // hint: second could call the first of rest.
-    string second(ListNode* head);
-    
-    //returns a reference to the last node in the list, or NULL if the list is empty.
-    ListNode* pointerToLast(ListNode* head);
-    
-    //returns a copy of the last node (not just its value!). copyofLast can be recursive.
-    ListNode* copyOfLast(ListNode* head);
-    
-    //returns a reference to a list whose first node&#39;s value is specified by the argument, and the
-    //first node&#39;s next links to the original list.
-    ListNode* addFirst(ListNode* head, string arg);
-    
-    //returns a reference to a list whose last node&#39;s value is specified by the argument, such
-    //that this last node has been appended to the original list and had its next is set to NULL
-    ListNode* addLast(ListNode* head, string arg);
 
     //inserts a Node into LinkedList
     ListNode* add(ListNode* theRest, ListNode* addition=new ListNode(), int position=0);
@@ -83,92 +49,6 @@ ListNode::ListNode(string a, ListNode* b, ListNode* n) { // sets string and poin
   value = a;
   previous = b; 
   next = n;
-}
-
-ListNode* ListNode::copyNode(ListNode* arg)  {
-  if(arg == NULL) { 
-    return NULL; // ends recursion if arg==NULL
-  }
-  ListNode* other = new ListNode(arg->value, arg->previous, arg->next); // a new ListNode
-  return other;
-}
-
-ListNode* ListNode::copyList(ListNode* arg) { // not needed for this assignment
-  /*
-  if(arg == NULL) { return NULL; }
-  ListNode* copyHead = copyNode(arg); // the new head
-  ListNode* copy = copyHead; // use to traverse through Linked List
-  while(copy->next != NULL) { // keep looping until end of Linked List
-    ListNode* temp = copyNode(copy->next); // make copy
-    temp->previous = copy; // assign previous of copy to be the correct previous
-    copy->next = temp; 
-    copy = copy->next;
-  }
-  return copyHead;
-  */
-  return arg;
-}
-
-ListNode* ListNode::rest(ListNode* head) {
-  if(head == NULL) { // checks if NULL
-    return NULL;
-  } else if(head->next == NULL) { // makes sure next is not NULL
-    return NULL;
-  }
-  return head->copyList(head->next); // returns a copy of the list excluding the head
-}
-
-string ListNode::first(ListNode* head) {
-  if(head == NULL) { // checks if NULL
-    return "NULL";
-  }
-  return head->value; // returns the value
-}
-
-string ListNode::second(ListNode* head) {
-  if(head == NULL) { // checks if NULL
-    return "NULL";
-  }
-  ListNode* noFirst = head->rest(head); // rest method excludes the head
-  return noFirst->first(noFirst); // return the value of the second node (since the rest method removed the first node)
-}
-
-ListNode* ListNode::pointerToLast(ListNode* head) { // not needed for this assignment
-  /*
-  if(head == NULL) { // checks if NULL
-    return NULL;
-  } else if(head->next == NULL) { // makes sure next is not NULL and if it is, this is the last node
-    return head;
-  }
-  return head->pointerToLast(head->next); // recursion (if head is not the last Node, keep going down the list)
-  */
-  return head;
-}
-
-ListNode* ListNode::copyOfLast(ListNode* head) {
-  return head->copyNode(head->pointerToLast(head)); // returns a copy of the last node
-}
-
-ListNode* ListNode::addFirst(ListNode* head, string arg) {
-  ListNode* newNode = new ListNode(arg, head->previous, head); // creates new node with (string) value of arg & takes place as the head by linking this node's next to the origianl head
-  head->previous = newNode;
-  
-  if(head->length(head) == 2) {
-    newNode->previous = head;
-  }
-  
-  return newNode;
-}
-
-ListNode* ListNode::addLast(ListNode* head, string arg) { // not needed for this assignment
-  /*
-  ListNode* last = head->pointerToLast(head); // gets the pointer to the last node
-  ListNode* newNode = new ListNode(arg, last, head); // creates new node with (string) value of arg & this node's next is head & previous is original last node
-  last->next = newNode; // sets the origial last node to link with the new (last) node
-  head->previous = newNode;
-  return head;
-  */
-  return head;
 }
 
 ListNode* ListNode::add(ListNode* theRest, ListNode* addition, int position) { // alteration for add method

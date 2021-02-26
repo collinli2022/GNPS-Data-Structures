@@ -71,7 +71,7 @@ int main()
   head->printForward(head);
   head->printBackward(head);
   cout << head << "(cout)" << endl << endl;
-  /*
+  
   cout << "Add what?" << endl;
 	string y;
   cin >> y;
@@ -91,7 +91,7 @@ int main()
   head->printForward(head);
   head->printBackward(head);
   cout << head << "(cout)" << endl << endl;
-	*/
+	
   head = head->remove(head);
   printComplex(head);
   head->printForward(head);
