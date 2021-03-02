@@ -6,43 +6,61 @@
 // Preprocessor directive
 #include <iostream>
 #include <string>
+#include <fstream>
+#include<bits/stdc++.h> 
 using namespace std;
 
 class ListNode {
   private:
-    string value;
+    int index;
     ListNode* previous;
     ListNode* next;
-    int length(ListNode* head); // helper method to get length of LinkedList
   public:
-    ListNode(string a="", ListNode* b=NULL, ListNode* n=NULL); // constructor
+    ListNode(int a, ListNode* b=NULL, ListNode* n=NULL); // constructor
 
-    string simulate(ListNode* head); // returns the winner name
+    int simulate(ListNode* head, int cycleLength); // returns the winner name
 
     //inserts a Node into LinkedList
     ListNode* add(ListNode* head, string y, int position=0);
+
+    ListNode* create(int length);
 
     //deletes a node from LinkedList
     ListNode* remove(ListNode* head, int position=0);
     ListNode* remove(ListNode* head, ListNode* node);
 
     // Getters
-    string getValue() { return value; }
+    int getIndex() { return index; }
     ListNode* getNext() { return next; }
     ListNode* getPrevious() { return previous; }
 
-    ~ListNode() { delete next; } // deconstructor that deletes pointer
-}
+    int length(ListNode* head); // helper method to get length of LinkedList
 
-ListNode::ListNode(string a, ListNode* b, ListNode* n) { // sets string and pointers
-  value = a;
+    ~ListNode() { delete next; } // deconstructor that deletes pointer
+};
+
+ListNode::ListNode(int a, ListNode* b, ListNode* n) { // sets string and pointers
+  index = a;
   previous = b; 
   next = n;
 }
 
-string ListNode::simulate(ListNode* head) {
-  int cycleLength = 3;
-  int participants = head->length();
+ListNode* ListNode::create(int length) {
+  ListNode* head = new ListNode(0);
+  ListNode* index = head;
+  for(int i = 1; i < length; i++) {
+    ListNode* temp = new ListNode(i);
+    temp->previous = index;
+    temp->next = head;
+
+    index->next=temp;
+    index = index->next;
+  }
+  return head;
+}
+
+int ListNode::simulate(ListNode* head, int cycleLength) {
+  int participants = head->length(head);
   while(participants > 1) { // keep playing till winner
 
     for(int i = 0; i < cycleLength; i++) { // Duck (+1) Duck (+1) Goose (*)
@@ -55,10 +73,28 @@ string ListNode::simulate(ListNode* head) {
     head->next->previous = head->previous; // next node's previous is head's previous
     head = nullptr;
     head = next;
-    delete next;
-
+    participants -= 1;
+    
+    cout << head->length(head) << endl;
   }
-  return head->value; // should just be one remaining
+  return head->index; // should just be one remaining
+}
+
+int ListNode::length(ListNode* head) {
+  int count = 1; // will be counter - this node is the first node
+  ListNode* copy = head;
+  if(copy != NULL) {
+    copy=copy->next;
+  } else {
+    return 0;
+  }
+  while(copy != NULL && copy != head) { // keep looping until end of Linked List
+    count++; // add to counter
+    copy=copy->next; // move down the linked List
+  }
+  copy = nullptr;
+  delete copy; // delete pointer
+  return count;
 }
 
 /*
@@ -66,7 +102,12 @@ Write a program called DuckDuckGoose that first prompts the user for the name of
 */
 
 int main() {
-
+  // testing
+  ListNode* head = new ListNode(0);
+  head = head->create(20);
+  cout << head->length(head) << endl;
+  cout << head->simulate(head, 3) << endl;
+  
   // prompts the user for the name of a file
   cout << "Enter the name of the file: ";
   string fileName;
@@ -78,14 +119,10 @@ int main() {
   ifstream myfile (fileName);
   if (myfile.is_open()) { // open file
     while ( getline (myfile, line) ) { // get lines
+      int participants = stoi(line);
+      getline (myfile, line);
+      int cycle = stoi(line);
       
-      istringstream ss(line); // Used to split string around spaces.
- 
-      string word; // for storing each word
-     
-      while (ss >> word) { // loop through all words in line
-
-      }
     }
     myfile.close();
   } else { cout << "Unable to open file"; }
