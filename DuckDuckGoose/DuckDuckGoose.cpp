@@ -34,6 +34,7 @@ class ListNode {
     ListNode* getNext() { return next; }
     ListNode* getPrevious() { return previous; }
 
+    void printForward(ListNode* head);
     int length(ListNode* head); // helper method to get length of LinkedList
 
     ~ListNode() { delete next; } // deconstructor that deletes pointer
@@ -55,6 +56,11 @@ ListNode* ListNode::create(int length) {
 
     index->next=temp;
     index = index->next;
+    
+    if(i == length-1) {
+      head->previous = temp;
+    }
+    
   }
   return head;
 }
@@ -63,7 +69,9 @@ int ListNode::simulate(ListNode* head, int cycleLength) {
   int participants = head->length(head);
   while(participants > 1) { // keep playing till winner
 
-    for(int i = 0; i < cycleLength; i++) { // Duck (+1) Duck (+1) Goose (*)
+    //head->printForward(head);
+
+    for(int i = 0; i < cycleLength-1; i++) { // Duck (+1) Duck (+1) Goose (*)
       head = head->next;
     }
 
@@ -75,7 +83,7 @@ int ListNode::simulate(ListNode* head, int cycleLength) {
     head = next;
     participants -= 1;
     
-    cout << head->length(head) << endl;
+    
   }
   return head->index; // should just be one remaining
 }
@@ -97,34 +105,90 @@ int ListNode::length(ListNode* head) {
   return count;
 }
 
+void ListNode::printForward(ListNode* head) {
+  if(head == NULL) { // if null then print null
+    cout << "[NULL]" << endl;
+  } else if(head->next == NULL) { // if only one node then print that node
+    cout << "[" << to_string(head->index) << "]" << endl;
+  } else {
+    ListNode* orig = head; // starting point
+    string returnStr = "[";
+    do { // Traverse list
+      returnStr += to_string(head->index);
+      head = head->next; // go fowards
+      if(head != NULL && orig != head) { returnStr += ", "; }
+    } while(head != NULL && orig != head); // when return to starting point end
+    returnStr += "]";
+    cout << returnStr << endl;
+  }
+}
+
 /*
 Write a program called DuckDuckGoose that first prompts the user for the name of a file and then performs the DuckDuckGoose algorithm from Intro to Programming. The txt file will contain a series of runs of the program. The first line for each run is the number of participants and the second line is the cycle. The cycle number does not need to be less than the number of participants, but both will be positive values. Your program must output the trial number followed by a colon and a single space and then the position of the trial winner, one trial per line, in a new text file called "result.txt" that is created by your program. Your program MUST use a circular linked list to run each trial. Standard rules apply for formatting and usability. 4 points for documentation, 4 points for user-friendliness, 24 points for the required functionality (file read, linked list, file write, correct result for each trial).
 */
 
+void printComplex(ListNode* head) {
+  ListNode* orig = head;
+  if (head == NULL) { cout << "NULL" << endl; return; }
+  cout << "[";
+  do {
+    if (head->getPrevious() == NULL && head->getNext() == NULL)
+    	  cout << (void*)head << ":\t" << head->getIndex() << "\t(Next: NULL     \t& Previous: NULL)";
+    else if (head->getPrevious() == NULL)
+    	  cout << (void*)head << ":\t" << head->getIndex() << "\t(Next: " << (void*)head->getNext() << "\t& Previous: NULL)";
+    else if (head->getNext() == NULL)
+    	  cout << (void*)head << ":\t" << head->getIndex() << "\t(Next: NULL     \t& Previous: " << (void*)head->getPrevious() << ")";
+    else
+    	  cout << (void*)head << ":\t" << head->getIndex() << "\t(Next: " << (void*)head->getNext() << "\t& Previous: " << (void*)head->getPrevious() << ")";
+  	head = head->getNext();
+  	if(head == orig || head == NULL)
+      cout << "]" << endl;
+    else 
+      cout << "," << endl;
+  } while(orig != head && head != NULL);
+}
+
 int main() {
+  /*
   // testing
   ListNode* head = new ListNode(0);
-  head = head->create(20);
+  head = head->create(127);
+  //printComplex(head);
   cout << head->length(head) << endl;
-  cout << head->simulate(head, 3) << endl;
+  cout << head->simulate(head, 13) << endl;
+  */
   
   // prompts the user for the name of a file
   cout << "Enter the name of the file: ";
-  string fileName;
-  cin >> fileName;
+  string inputName;
+  cin >> inputName;
 
   ListNode* words = NULL; // will represent head of linked list containing words
 
   string line;
-  ifstream myfile (fileName);
-  if (myfile.is_open()) { // open file
-    while ( getline (myfile, line) ) { // get lines
+  ifstream fileInput(inputName);
+  ofstream fileOutput;
+  fileOutput.open("result.txt");
+  
+  int trialIndex = 1;
+  if (fileInput.is_open()) { // open file
+    while ( getline (fileInput, line) ) { // get lines
       int participants = stoi(line);
-      getline (myfile, line);
+      getline (fileInput, line);
       int cycle = stoi(line);
       
+      ListNode* head = new ListNode(0);
+      head = head->create(participants);
+      string output = to_string(trialIndex);
+      output += ": ";
+      output += to_string(head->simulate(head, cycle));
+      cout << output << endl;
+      fileOutput << output << "\n";
+      trialIndex += 1;
+      
     }
-    myfile.close();
+    fileInput.close();
+    fileOutput.close();
   } else { cout << "Unable to open file"; }
 
   return 0;
