@@ -15,28 +15,21 @@ class ListNode {
     int index;
     ListNode* previous;
     ListNode* next;
+    int length(ListNode* head); // helper method to get length of LinkedList
   public:
     ListNode(int a, ListNode* b=NULL, ListNode* n=NULL); // constructor
 
     int simulate(ListNode* head, int cycleLength); // returns the winner name
 
-    //inserts a Node into LinkedList
-    ListNode* add(ListNode* head, string y, int position=0);
-
     ListNode* create(int length);
-
-    //deletes a node from LinkedList
-    ListNode* remove(ListNode* head, int position=0);
-    ListNode* remove(ListNode* head, ListNode* node);
 
     // Getters
     int getIndex() { return index; }
     ListNode* getNext() { return next; }
     ListNode* getPrevious() { return previous; }
 
-    void printForward(ListNode* head);
-    int length(ListNode* head); // helper method to get length of LinkedList
-
+    void print(ListNode* head);
+    
     ~ListNode() { delete next; } // deconstructor that deletes pointer
 };
 
@@ -105,7 +98,7 @@ int ListNode::length(ListNode* head) {
   return count;
 }
 
-void ListNode::printForward(ListNode* head) {
+void ListNode::print(ListNode* head) {
   if(head == NULL) { // if null then print null
     cout << "[NULL]" << endl;
   } else if(head->next == NULL) { // if only one node then print that node
@@ -127,6 +120,7 @@ void ListNode::printForward(ListNode* head) {
 Write a program called DuckDuckGoose that first prompts the user for the name of a file and then performs the DuckDuckGoose algorithm from Intro to Programming. The txt file will contain a series of runs of the program. The first line for each run is the number of participants and the second line is the cycle. The cycle number does not need to be less than the number of participants, but both will be positive values. Your program must output the trial number followed by a colon and a single space and then the position of the trial winner, one trial per line, in a new text file called "result.txt" that is created by your program. Your program MUST use a circular linked list to run each trial. Standard rules apply for formatting and usability. 4 points for documentation, 4 points for user-friendliness, 24 points for the required functionality (file read, linked list, file write, correct result for each trial).
 */
 
+// for debugging purposes only
 void printComplex(ListNode* head) {
   ListNode* orig = head;
   if (head == NULL) { cout << "NULL" << endl; return; }
@@ -173,19 +167,18 @@ int main() {
   int trialIndex = 1;
   if (fileInput.is_open()) { // open file
     while ( getline (fileInput, line) ) { // get lines
-      int participants = stoi(line);
+      int participants = stoi(line); // get num of participants
       getline (fileInput, line);
-      int cycle = stoi(line);
+      int cycle = stoi(line); // get cycle length
       
       ListNode* head = new ListNode(0);
-      head = head->create(participants);
+      head = head->create(participants); // create List of participants length
       string output = to_string(trialIndex);
       output += ": ";
-      output += to_string(head->simulate(head, cycle));
+      output += to_string(head->simulate(head, cycle)); // get winner
       cout << output << endl;
       fileOutput << output << "\n";
       trialIndex += 1;
-      
     }
     fileInput.close();
     fileOutput.close();
