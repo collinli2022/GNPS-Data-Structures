@@ -81,7 +81,7 @@ int ListNode::simulate(ListNode* head, int cycleLength) {
   int returnint = head->index;
   head = nullptr;
   delete head; // prevent memory leaks
-  return head->index; // should just be one remaining
+  return returnint; // should just be one remaining
 }
 
 int ListNode::length(ListNode* head) {
