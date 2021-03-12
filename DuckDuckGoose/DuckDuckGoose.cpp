@@ -62,7 +62,7 @@ int ListNode::simulate(ListNode* head, int cycleLength) {
   int participants = head->length(head);
   while(participants > 1) { // keep playing till winner
 
-    //head->printForward(head);
+    // head->print(head);
 
     for(int i = 0; i < cycleLength-1; i++) { // Duck (+1) Duck (+1) Goose (*)
       head = head->next;
@@ -143,15 +143,6 @@ void printComplex(ListNode* head) {
 }
 
 int main() {
-  /*
-  // testing
-  ListNode* head = new ListNode(0);
-  head = head->create(127);
-  //printComplex(head);
-  cout << head->length(head) << endl;
-  cout << head->simulate(head, 13) << endl;
-  */
-  
   // prompts the user for the name of a file
   cout << "Enter the name of the file: ";
   string inputName;
@@ -164,7 +155,7 @@ int main() {
   ofstream fileOutput;
   fileOutput.open("result.txt");
   
-  int trialIndex = 1;
+  int trialIndex = 0;
   if (fileInput.is_open()) { // open file
     while ( getline (fileInput, line) ) { // get lines
       int participants = stoi(line); // get num of participants
@@ -176,7 +167,7 @@ int main() {
       string output = to_string(trialIndex);
       output += ": ";
       output += to_string(head->simulate(head, cycle)); // get winner
-      cout << output << endl;
+      // cout << output << endl; // <-- debug
       fileOutput << output << "\n";
       trialIndex += 1;
     }
