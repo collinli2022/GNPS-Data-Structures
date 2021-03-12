@@ -78,6 +78,9 @@ int ListNode::simulate(ListNode* head, int cycleLength) {
     
     
   }
+  int returnint = head->index;
+  head = nullptr;
+  delete head; // prevent memory leaks
   return head->index; // should just be one remaining
 }
 
@@ -147,8 +150,6 @@ int main() {
   cout << "Enter the name of the file: ";
   string inputName;
   cin >> inputName;
-
-  ListNode* words = NULL; // will represent head of linked list containing words
 
   string line;
   ifstream fileInput(inputName);
