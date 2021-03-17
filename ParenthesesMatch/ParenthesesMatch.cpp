@@ -9,74 +9,65 @@
 #include <fstream>
 #include<bits/stdc++.h> 
 using namespace std;
+class Stack {
+  private:
+    Stack* previous;
+    Stack* next;
+    string value;
+  public:
+    string LEFT = "([{<";
+    string RIGHT = ")]}>";
+    bool checkParen(string s);
+
+    Stack(string a, Stack* b=NULL, Stack* n=NULL); // constructor
+
+    Stack* add(string a, Stack* head); // add to top of stack
+
+    string pop(Stack* head); // get head and remove head
+
+    // Getters
+    string getValue() { return value; }
+    Stack* getNext() { return next; }
+    Stack* getPrevious() { return previous; }
+    
+    ~Stack() { delete next; } // deconstructor that deletes pointer
+};
 
 class ParenMatch
 {
-  private:
-    int index;
-    ListNode* previous;
-    ListNode* next;
-    int length(ListNode* head); // helper method to get length of LinkedList
   public:
-    string LEFT = &quot;([{&lt;&quot;;
-    string RIGHT = &quot;)]}&gt;&quot;;
-    bool checkParen(string s);
-
-    ListNode(int a, ListNode* b=NULL, ListNode* n=NULL); // constructor
-
-    // Getters
-    int getIndex() { return index; }
-    ListNode* getNext() { return next; }
-    ListNode* getPrevious() { return previous; }
-
-    void print(ListNode* head);
-    
-    ~ListNode() { delete next; } // deconstructor that deletes pointer
-
+    string LEFT = "([{<";
+    string RIGHT = ")]}>";
+  
+    ~ParenMatch() {} // deconstructor that deletes pointer
 };
 
 
-ListNode::ListNode(int a, ListNode* b, ListNode* n) { // sets string and pointers
-  index = a;
+Stack::Stack(string a, Stack* b, Stack* n) { // sets string and pointers
+  value = a;
   previous = b; 
   next = n;
 }
 
-
-int ListNode::length(ListNode* head) {
-  int count = 1; // will be counter - this node is the first node
-  ListNode* copy = head;
-  if(copy != NULL) {
-    copy=copy->next;
-  } else {
-    return 0;
-  }
-  while(copy != NULL && copy != head) { // keep looping until end of Linked List
-    count++; // add to counter
-    copy=copy->next; // move down the linked List
-  }
-  copy = nullptr;
-  delete copy; // delete pointer
-  return count;
+Stack* Stack::add(string a, Stack* head) {
+  Stack* newHead = new Stack(a, NULL, head); // next is previous head
+  head->previous = newHead;
+  return newHead;
 }
 
-void ListNode::print(ListNode* head) {
-  if(head == NULL) { // if null then print null
-    cout << "[NULL]" << endl;
-  } else if(head->next == NULL) { // if only one node then print that node
-    cout << "[" << to_string(head->index) << "]" << endl;
-  } else {
-    ListNode* orig = head; // starting point
-    string returnStr = "[";
-    do { // Traverse list
-      returnStr += to_string(head->index);
-      head = head->next; // go fowards
-      if(head != NULL && orig != head) { returnStr += ", "; }
-    } while(head != NULL && orig != head); // when return to starting point end
-    returnStr += "]";
-    cout << returnStr << endl;
+string Stack::pop(Stack* head) {
+  if(head == NULL) {
+    return NULL;
   }
+  string returnStr = head->value;
+  head->next->previous = NULL;
+  Stack* newHead = head->next;
+  head->next = NULL;
+  head = nullptr;
+  head = newHead;
+  return returnStr;
 }
+Ask mrs zinn how to return both the pop output and set head to be new head
 
 /*
 Write a program called ParenthesesMatch that first prompts the user for the name of a file and then checks to see whether or not the parentheses for each line match. The txt file will contain a series of runs of the program, where each line consists of mathematical expressions involving the bracket symbols. Your program must output the trial number followed by a colon and a single space and then the result of the call to checkParen, one trial per line, in a new text file called "result.txt" that is created by your program. Your program MUST use a stack to run each trial. Standard rules apply for formatting and usability. 4 points for documentation, 4 points for user-friendliness, 24 points for the required functionality (file read, stack, file write, correct result for each trial).
@@ -96,7 +87,7 @@ int main() {
   int trialIndex = 0;
   if (fileInput.is_open()) { // open file
     while ( getline (fileInput, line) ) { // get lines
-      string equation = stoi(line); // get num of participants
+      string equation = line;
     }
     fileInput.close();
     fileOutput.close();
