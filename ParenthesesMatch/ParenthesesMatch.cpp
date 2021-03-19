@@ -24,6 +24,18 @@ class Stack {
 
     string pop(); // get head and remove head
 
+    // debugging purposes
+    void printMe(Stack* head) {
+      cout << "[";
+      while(head != NULL)	{
+        cout << head->getValue();
+        head = head->getNext();
+        if(head != NULL)
+          cout << ", ";
+      }
+      cout << "]" << endl;
+    }
+
     // Getters
     string getValue() { return value; }
     Stack* getNext() { return next; }
@@ -38,7 +50,6 @@ Stack::Stack(string a, Stack* n) { // sets string and pointers
 
 Stack* Stack::add(string a) {
   if(this->value=="") {
-    cout << "this is null2" << endl;
     return new Stack(a, NULL);
   }
   Stack* newHead = new Stack(a, this); // next is previous head
@@ -65,20 +76,39 @@ class ParenMatch {
   public:
     string LEFT = "([{<";
     string RIGHT = ")]}>";
+    
+    ParenMatch() {}; // default constructor
   
     bool checkParen(string input) {
       Stack* stack = new Stack();
+      bool justNumbers = true;
       // Traverse the string 
       for (int i = 0; i < input.length(); i++) {
-        if (LEFT.find(input[i]) != string::npos) { 
-          cout << "found LEFT: " << input[i] << endl;
-          string temp(input[i], 1);
+
+        if (LEFT.find(input[i]) != string::npos) {
+          justNumbers = false;
+          string temp(1, input[i]);
           stack = stack->add(temp);
-        } else if (RIGHT.find(input[i]) != string::npos) { 
+        } else if (RIGHT.find(input[i]) != string::npos) {
+          // stack->printMe(stack); 
           int index1 = RIGHT.find(input[i]);
-          int index2 = LEFT.find(stack->pop());
+          string popped = stack->pop();
+          if(popped == "") {
+            return false;
+          }
+          int index2 = LEFT.find(popped);
+          // cout << "Compare: " << input[i] <<  " - " << popped << endl;
+          // cout << index1 << " _ " << index2 << endl;
+          
           if(index1 != index2) { return false; }
         }
+      }
+      
+      // stack->printMe(stack);
+      // cout << " -- " << (stack->pop() == "") << endl;
+
+      if(stack->pop() != "" && !justNumbers) { // last check to make sure stack is empty - if it was just numbers then do not return false
+        return false;
       }
       return true;
     }
@@ -86,17 +116,7 @@ class ParenMatch {
     ~ParenMatch() {} // deconstructor that deletes pointer
 };
 
-// debugging purposes
-void printMe(Stack* head) {
-	cout << "[";
-	while(head != NULL)	{
-		 cout << head->getValue();
-		 head = head->getNext();
-		 if(head != NULL)
-			 cout << ", ";
-	}
-	cout << "]" << endl;
-}
+
 
 /*
 Write a program called ParenthesesMatch that first prompts the user for the name of a file and then checks to see whether or not the parentheses for each line match. The txt file will contain a series of runs of the program, where each line consists of mathematical expressions involving the bracket symbols. Your program must output the trial number followed by a colon and a single space and then the result of the call to checkParen, one trial per line, in a new text file called "result.txt" that is created by your program. Your program MUST use a stack to run each trial. Standard rules apply for formatting and usability. 4 points for documentation, 4 points for user-friendliness, 24 points for the required functionality (file read, stack, file write, correct result for each trial).
@@ -108,7 +128,7 @@ int main() {
   head = head->add("bob");
   head = head->add("no");
   
-  printMe(head);
+  head->printMe(head);
   
   cout << "3" << endl;
   cout << head->pop() << endl;
@@ -122,6 +142,8 @@ int main() {
   string inputName;
   cin >> inputName;
 
+  ParenMatch solver = ParenMatch(); 
+
   string line;
   ifstream fileInput(inputName);
   ofstream fileOutput;
@@ -131,6 +153,14 @@ int main() {
   if (fileInput.is_open()) { // open file
     while ( getline (fileInput, line) ) { // get lines
       string equation = line;
+      bool output = solver.checkParen(equation);
+
+      if (output) {
+        fileOutput << trialIndex << ": good!" << "\n";
+      } else {
+        fileOutput << trialIndex << ": BAD" << "\n";
+      }
+      trialIndex += 1;
     }
     fileInput.close();
     fileOutput.close();
