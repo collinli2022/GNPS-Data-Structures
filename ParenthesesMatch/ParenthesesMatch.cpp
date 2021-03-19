@@ -1,7 +1,7 @@
 // Collin Li
 // Data Structures
 // 03/15/2021
-// DuckDuckGoose MiniProject 
+// ParenthesesMatch Project 
 
 // Preprocessor directive
 #include <iostream>
