@@ -121,22 +121,19 @@ int main() {
   ParenMatch solver = ParenMatch(); // used to solve
 
   string line;
-  ifstream fileInput(inputName);
-  ofstream fileOutput;
-  fileOutput.open("result.txt");
+  ifstream fileInput(inputName); // Creates an input stream
+  ofstream fileOutput;  
   
   int trialIndex = 0; // count trial number
   if (fileInput.is_open()) { // open file
+    fileOutput.open("result.txt");
     while ( getline (fileInput, line) ) { // get lines
       string equation = line; // get equation
       bool output = solver.checkParen(equation); // see if grouping of parenthesis is correct
-
       // The two output options
-      if (output) {
-        fileOutput << trialIndex << ": good!" << "\n";
-      } else {
-        fileOutput << trialIndex << ": BAD" << "\n";
-      }
+      if (output) { fileOutput << trialIndex << ": good!" << "\n"; }
+      else { fileOutput << trialIndex << ": BAD" << "\n"; }
+
       trialIndex += 1;
     }
     fileInput.close();
