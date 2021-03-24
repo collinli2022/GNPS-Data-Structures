@@ -50,7 +50,6 @@ Stack::Stack(int a, Stack* n) { // sets int and pointers
 
 Stack* Stack::push(int a) {
   if(this->value==INT_MAX) { // means the stack is empty
-    cout << "AAAAAAAAAA" << endl;
     return new Stack(a, NULL);
   }
   Stack* newHead = new Stack(a, this); // sets this node to next node and replaces head with new node
@@ -81,7 +80,7 @@ class Postfix {
   public:
     Postfix() {};
 
-    int simulate(vector<string> tokens) {
+    string simulate(vector<string> tokens) {
       Stack* stack = new Stack(); //Creates a stack which will be responsible for the postfix operations
       for (int i = 0; i < tokens.size(); i++) {
         
@@ -110,7 +109,11 @@ class Postfix {
         } else if (temp.compare("^") == 0) { //Checks for exponents
           int A = stack->pop();
           int B = stack->pop();
-          stack = stack->push((int)pow(B, A));
+          if(i == tokens.size()-1) {
+            return to_string(pow(B,A));
+          } else {
+            stack = stack->push((int)pow(B, A));
+          }
         } else if (temp.compare("!") == 0) { //Checks for factorial
           int A = stack->pop();
           int result = 1;
@@ -119,10 +122,9 @@ class Postfix {
         }
         else { // Not an operator so a number
           stack = stack->push(stoi(temp));
-          stack->printMe(stack);
         }
       }
-      return stack->pop(); //Returns the final leftover item in the stack, which is the result of the operations
+      return to_string(stack->pop()); //Returns the final leftover item in the stack, which is the result of the operations
     }
 };
 
@@ -142,16 +144,15 @@ int main() {
   if (fileInput.is_open()) { // open file
     fileOutput.open("result.txt");
     while ( getline (fileInput, line) ) { // get lines
-      cout <<"BOB" << endl;
       std::stringstream iss( line );
       string number;
       std::vector<string> myNumbers;
       while ( iss >> number ) {
         myNumbers.push_back( number );
       }
-      int output = postfix.simulate(myNumbers); // see if grouping of parenthesis is correct
+      string output = postfix.simulate(myNumbers); // see if grouping of parenthesis is correct
 
-      fileOutput << trialIndex << ": " << output << "\n";
+      fileOutput << line << ": " << output << "\n";
 
       trialIndex += 1;
     }
