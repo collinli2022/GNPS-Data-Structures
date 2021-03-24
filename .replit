@@ -1,2 +1,2 @@
 language = "cpp"
-run = "clang++-7 -pthread -std=c++17 -o ParenthesesMatch/ParenthesesMatch ParenthesesMatch/ParenthesesMatch.cpp"
+run = "clang++-7 -pthread -std=c++17 -o Postfix/Postfix Postfix/Postfix.cpp"
