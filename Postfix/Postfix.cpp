@@ -80,10 +80,9 @@ class Postfix {
   public:
     Postfix() {};
 
-    string simulate(vector<string> tokens) {
+    float eval(vector<string> tokens) {
       Stack* stack = new Stack(); //Creates a stack which will be responsible for the postfix operations
       for (int i = 0; i < tokens.size(); i++) {
-        
         string temp = tokens.at(i); //Gets the token in question
         if (temp.compare("+") == 0) { //Checks for addition
           int A = stack->pop();
@@ -109,7 +108,7 @@ class Postfix {
           int A = stack->pop();
           int B = stack->pop();
           if(i == tokens.size()-1) {
-            return to_string(pow(B,A));
+            return pow(B,A);
           } else {
             stack = stack->push((int)pow(B, A));
           }
@@ -117,12 +116,13 @@ class Postfix {
           int A = stack->pop();
           int result = 1;
           for (int i = 1; i <= A; i++) { result *= i; }
+          stack = stack->push(result);
         }
         else { // Not an operator so a number
           stack = stack->push(stoi(temp));
         }
       }
-      return to_string(stack->pop()); //Returns the final leftover item in the stack, which is the result of the operations
+      return stack->pop(); //Returns the final leftover item in the stack, which is the result of the operations
     }
 };
 
@@ -150,7 +150,7 @@ int main() {
       while ( iss >> number ) {
         myNumbers.push_back( number );
       }
-      string output = postfix.simulate(myNumbers); // see if grouping of parenthesis is correct
+      float output = postfix.eval(myNumbers); // see if grouping of parenthesis is correct
 
       fileOutput << line << ": " << output << "\n";
       
