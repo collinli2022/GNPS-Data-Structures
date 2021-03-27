@@ -81,30 +81,30 @@ class Postfix {
     Postfix() {};
 
     float eval(vector<string> tokens) {
-      Stack* stack = new Stack(); //Creates a stack which will be responsible for the postfix operations
+      Stack* stack = new Stack(); // Creates a stack which will be responsible for the postfix operations
       for (int i = 0; i < tokens.size(); i++) {
-        string temp = tokens.at(i); //Gets the token in question
-        if (temp.compare("+") == 0) { //Checks for addition
+        string temp = tokens.at(i); // Gets the token in question
+        if (temp.compare("+") == 0) { // Checks for addition
           int A = stack->pop();
           int B = stack->pop();
           stack = stack->push(A + B);
-        } else if (temp.compare("-") == 0) { //Checks for subtraction
+        } else if (temp.compare("-") == 0) { // Checks for subtraction
           int A = stack->pop();
           int B = stack->pop();
           stack = stack->push(B - A);
-        } else if (temp.compare("*") == 0) { //Checks for multiplication
+        } else if (temp.compare("*") == 0) { // Checks for multiplication
           int A = stack->pop();
           int B = stack->pop();
           stack = stack->push(A * B);
-        } else if (temp.compare("/") == 0) { //Checks for division
+        } else if (temp.compare("/") == 0) { // Checks for division
           int A = stack->pop();
           int B = stack->pop();
           stack = stack->push( (int)(B / A));
-        } else if (temp.compare("%") == 0) { //Checks for modulus
+        } else if (temp.compare("%") == 0) { // Checks for modulus
           int A = stack->pop();
           int B = stack->pop();
           stack = stack->push(B % A);
-        } else if (temp.compare("^") == 0) { //Checks for exponents
+        } else if (temp.compare("^") == 0) { // Checks for exponents
           int A = stack->pop();
           int B = stack->pop();
           if(i == tokens.size()-1) {
@@ -112,13 +112,12 @@ class Postfix {
           } else {
             stack = stack->push((int)pow(B, A));
           }
-        } else if (temp.compare("!") == 0) { //Checks for factorial
+        } else if (temp.compare("!") == 0) { // Checks for factorial
           int A = stack->pop();
           int result = 1;
           for (int i = 1; i <= A; i++) { result *= i; }
           stack = stack->push(result);
-        }
-        else { // Not an operator so a number
+        } else { // Not an operator so a number
           stack = stack->push(stoi(temp));
         }
       }
@@ -142,7 +141,7 @@ int main() {
   if (fileInput.is_open()) { // open file
     fileOutput.open("result.txt");
     while ( getline (fileInput, line) ) { // get lines
-      cout << trialIndex << ": " << line << endl;
+      // cout << trialIndex << ": " << line << endl; // debug
 
       std::stringstream iss( line );
       string number;
@@ -150,9 +149,8 @@ int main() {
       while ( iss >> number ) {
         myNumbers.push_back( number );
       }
-      float output = postfix.eval(myNumbers); // see if grouping of parenthesis is correct
-
-      fileOutput << line << ": " << output << "\n";
+      float output = postfix.eval(myNumbers); // get output
+      fileOutput << line << ": " << output << "\n"; // outputs to txt
       
       trialIndex += 1;
     }
