@@ -91,30 +91,44 @@ class Infix {
     //to postfix expression
     string infixToPostfix(string infix) {
       string result = "";
-      string s = infix;
       Stack* st = new Stack();
-      st->push('N');
-      for(int i = 0; i < infix.length(); i++) {
-          
-          if((s[i] >= 'a' && s[i] <= 'z') || (s[i] >= 'A' && s[i] <= 'Z')) { result += s[i]; } // If the index char is an operand, add it to output string.
-          else if(s[i] == '(') { st->push('('); } // If the scanned character is an '(', push it to the stack.
-          else if(s[i] == ')') { // If the index char is an ')', pop and to output string from the stack until an '(' appears.
-            while(st->getValue() != 'N' && st->getValue() != '(') {
-              char c = st->pop();              
-              result += c;
-            }
-            if(st->getValue() == '(') {
-                char c = st->getValue();
-                st->pop();
-            }
-          } else { // If an operator is at index
-              while(st->getValue() != 'N' && isLower(s[i], st->getValue())) {
-                  char c = st->pop();
-                  result += c;
-              }
-              st->push(s[i]);
-          }
+      st = st->push('N');
+
+      vector<string> s;
+      while ( iss >> infix ) {
+        myNumbers.push_back( number );
       }
+
+      for(int i=0; i < myNumbers.size(); i++){
+        cout << s[i] << endl;
+        if(s[i] == ' ') {} // Do nothing if it is a space
+        else if((s[i] >= '0' && s[i] <= '9')) { result += s[i]; result += " "; } // If the index char is an operand, add it to output string.
+        else if(s[i] == '(') { st = st->push('('); } // If the scanned character is an '(', push it to the stack.
+        else if(s[i] == ')') { // If the index char is an ')', pop and to output string from the stack until an '(' appears.
+          while(st->getValue() != 'N' && st->getValue() != '(') {
+            char c = st->pop();              
+            result += c;
+            result += " ";
+          }
+          if(st->getValue() == '(') {
+              char c = st->getValue();
+              st->pop();
+          }
+        } else { // If an operator is at index
+            while(st->getValue() != 'N' && isLower(s[i], st->getValue())) {
+                char c = st->pop();
+                result += c;
+                result += " ";
+            }
+            st = st->push(s[i]);
+            cout << s[i] << " - " << endl;
+            st->printMe(st);
+        }
+        cout << "adf: " << result << endl;
+        st->printMe(st);
+      }
+
+      cout << "DFK: " << result << endl;
       
       // Pop all the remaining elements from the stack
       while(st->getValue() != 'N') {
@@ -137,24 +151,24 @@ int main() {
 
   // TESTING
   cout << "Start" << endl;
-  cout << infix.infixToPostfix("3*(4*5–6+2)") << endl;
+  cout << infix.infixToPostfix("3 * ( 4 * 5 -6+2)") << endl;
+
+  // prompts the user for the name of a file
+  cout << "Enter the name of the file: ";
+  string inputName;
+  cin >> inputName;
 
   string line;
   ifstream fileInput(inputName); // Creates an input stream
   ofstream fileOutput;  
-  
   int trialIndex = 0; // count trial number
   if (fileInput.is_open()) { // open file
     fileOutput.open("result.txt");
+    fileOutput << "Infix   -->   Postfix   -->   Evaluate\n";
     while ( getline (fileInput, line) ) { // get lines
       // cout << trialIndex << ": " << line << endl; // debug
-
-      std::stringstream iss( line );
-      string number;
-      std::vector<string> myNumbers;
-      while ( iss >> number ) {
-        myNumbers.push_back( number );
-      }      
+      string output = infix.infixToPostfix(line);
+      fileOutput << line << "   " << output << "   " << "blah" << endl; // outputs to txt
       trialIndex += 1;
     }
     fileInput.close();
