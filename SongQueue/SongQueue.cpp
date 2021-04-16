@@ -6,6 +6,8 @@
 // Preprocessor directive
 #include <iostream>
 #include <string>
+#include <fstream>
+#include<bits/stdc++.h> 
 using namespace std;
 
 class SongQueue {
@@ -66,9 +68,17 @@ class SongQueue {
   and stores it in a queue.
   */
     SongQueue* readPlayList() {
-      
+      SongQueue* result = new SongQueue();
+      string line;
+      ifstream fileInput("songs.txt"); // Creates an input stream 
+      int songIndex = 0; // count trial number
+      if (fileInput.is_open()) { // open file
+        while ( getline (fileInput, line) ) { // get lines
+          result->enqueue(line);
+        }
+      }
+      return result;
     }
-       
     /* processes the character codes A, P, D, Q, a, p, d, q.
     "A" prompts the user to enter the name of the song, 
     adds it to the queue, and displays the whole queue
@@ -88,7 +98,39 @@ class SongQueue {
     */
     
     void processRequest(string str) {
-    
+      string choice = str;
+      if(choice == "a" || choice == "A") {
+        cout << "Song to add: ";
+        string song;
+        cin >> song;
+        if(this->contains(song)) {
+          cout << "A duplicate exists so song was not added" << endl;
+        } else {
+          this->enqueue(song);
+        }
+      } else if(choice == "p" || choice == "P") {
+        if(this->isEmpty()) {
+          cout << "Empty queue!" << endl;
+        } else {
+          cout << "Now Playing: " << this->dequeue() << endl;
+        }
+      } else if(choice == "d" || choice == "D") {
+        cout << "Your music queue: ";
+        this->printSongList();
+        cout << "Delete which song (exact match)? ";
+        string song;
+        cin >> song;
+        if(this->contains(song)) {
+          this->removeSong(song);
+        } else {
+          cout << "Error: Song not in list." << endl;
+        }
+      } else if(choice == "q" || choice == "Q") {
+        cout << "No more music for you today. Goodbye!" << endl;
+        exit(0);
+      } else {
+        cout << "Invalid. Try again." << endl;
+      }
     }
        
     // prints the songs in the queue, separated by commas.
@@ -170,6 +212,10 @@ string SongQueue::peekFront() {
 int main() {
   cout << "Start" << endl;
   SongQueue* test = new SongQueue("bob");
+  SongQueue* other = test->readPlayList();
+  other->printSongList();
+
+
   cout << "1" << endl;
   test->enqueue("no");
   cout << "2" << endl;
@@ -178,18 +224,25 @@ int main() {
   cout << "4" << endl;
   test->printSongList();
   cout << "Stop" << endl;
+
+  SongQueue* songs = new SongQueue();
+	// call readPlaylist
+  songs = songs->readPlayList();
   
-  //call readPlaylist
-  //call printSongList
-	  
-  string prompt = "Add song (A), Play song (P), Delete song (D), Quit (Q):  ";
-  string str = "";
-  do{
-  //prompt the user
-  //get the choice
-  //process it
-  //repeat until quit     
-  }while( true );
+  string prompt = "Add song (A), Play song (P), Delete song (D), Quit (Q): ";
+  do {
+    cout << "Your music queue: ";
+    songs->printSongList();
+    
+    // prompt the user
+    cout << prompt;
+    // get the choice
+    string choice;
+    cin >> choice;
+    // process it
+    songs->processRequest(choice);
+    // repeat until quit     
+  } while( true );
 }
 
 /*********************************************
