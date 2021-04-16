@@ -16,29 +16,36 @@ class SongQueue {
     SongQueue* previous;
     SongQueue* next;
     void removeSong(string song) {
-      if(isEmpty()) {
-        return;
-      }
+      if(isEmpty()) { return; }
       SongQueue* current = this->getQueue();
       while(current != NULL) {
         if(current->value == song) {
           current->value = "";
-          if(current->previous == NULL && current->next == NULL) {
-            current->previous = NULL;
-            current->next = NULL;
-          } else if(current->previous == NULL) {
-            current->next->previous = NULL;
-            current->next = NULL;
+          if(current->previous == NULL && current->next == NULL) { // only one element in queue
+            current->dequeue();
+            current = nullptr;
+            delete current;
+            return;
+          } else if(current->previous == NULL) { // first element in queue
+            current->dequeue();
+            current = nullptr;
+            delete current;
+            return;
           } else if(current->next == NULL) {
             current->previous->next = NULL;
             current->previous = NULL;
+            current = nullptr;
+            delete current;
+            return;
           } else {
             current->next->previous = current->previous;
             current->next = NULL;
             current->previous->next = current->next;
             current->previous = NULL;
+            current = nullptr;
+            delete current;
+            return;
           }
-          return;
         }
         current = current->next;
       }
@@ -172,7 +179,7 @@ string SongQueue::dequeue() {
   if(first->next != NULL) {
     SongQueue* newHead = first->next;
     first->next = newHead->next;
-    first->value = newHead->next->value;
+    first->value = newHead->value;
     if(newHead->next != NULL) {
       newHead->next->previous = this;
     }
@@ -181,6 +188,8 @@ string SongQueue::dequeue() {
     newHead->previous=nullptr;
     newHead=nullptr;
     delete newHead;
+  } else {
+    first->value="";
   }
   return song;
 }
