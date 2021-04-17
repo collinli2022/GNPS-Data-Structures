@@ -42,13 +42,13 @@ void SongQueue::removeSong(string song) {
         current = nullptr;
         delete current;
         return;
-      } else if(current->next == NULL) {
+      } else if(current->next == NULL) { // last element in queue
         current->previous->next = NULL;
         current->previous = NULL;
         current = nullptr;
         delete current;
         return;
-      } else {
+      } else { // middle element in queue
         current->next->previous = current->previous;
         current->previous->next = current->next;
         current->next = NULL;
@@ -58,7 +58,7 @@ void SongQueue::removeSong(string song) {
         return;
       }
     }
-    current = current->next;
+    current = current->next; // go down the queue
   }
 }
 bool SongQueue::contains(string song) {
@@ -101,18 +101,9 @@ void SongQueue::enqueue(string x) {
     current->next = newSong;
   }
 }
-
-bool SongQueue::isEmpty() {
-  if(this->value == "" && this->previous == NULL && this->next == NULL) {
-    return true;
-  }
-  return false;
-}
-
-string SongQueue::peekFront() {
-  return this->getQueue()->value;
-}
-// reads the file "songs.txt".  Extracts the song's title and stores it in a queue.
+bool SongQueue::isEmpty() { return (this->value == "" && this->previous == NULL && this->next == NULL) }
+string SongQueue::peekFront() { return this->getQueue()->value; }
+// reads the file "songs.txt". Extracts the song's title and stores it in a queue.
 SongQueue* SongQueue::readPlayList() {
   SongQueue* result = new SongQueue();
   string line;
@@ -150,7 +141,7 @@ and ends the program.
 */
 void SongQueue::processRequest(string str) {
   string choice = str;
-  if(choice == "a" || choice == "A") {
+  if(choice == "a" || choice == "A") { // add song (enqueue)
     cout << "Song to add: ";
     string song;
     cin.ignore();
@@ -160,13 +151,13 @@ void SongQueue::processRequest(string str) {
     } else {
       this->enqueue(song);
     }
-  } else if(choice == "p" || choice == "P") {
+  } else if(choice == "p" || choice == "P") { // play song (dequeue)
     if(this->isEmpty()) {
       cout << "Empty queue!" << endl;
     } else {
       cout << "Now Playing: " << this->dequeue() << endl;
     }
-  } else if(choice == "d" || choice == "D") {
+  } else if(choice == "d" || choice == "D") { // delete song
     cout << "Your music queue: ";
     this->printSongList();
     cout << "Delete which song (exact match)? ";
@@ -178,7 +169,7 @@ void SongQueue::processRequest(string str) {
     } else {
       cout << "Error: Song not in list." << endl;
     }
-  } else if(choice == "q" || choice == "Q") {
+  } else if(choice == "q" || choice == "Q") { // quit
     cout << "No more music for you today. Goodbye!" << endl;
     exit(0);
   } else {
@@ -187,41 +178,31 @@ void SongQueue::processRequest(string str) {
 }
 // prints the songs in the queue, separated by commas.
 void SongQueue::printSongList() {
-  SongQueue* currentSong = this->getQueue();
+  SongQueue* currentSong = this->getQueue(); // get first in queue
   string result = "";
-  while(currentSong != NULL) {
+  while(currentSong != NULL) { // loop till end of queue
     result += currentSong->value;
     result += ", ";
     currentSong = currentSong->next;
   }
-  cout << result << endl;
+  cout << result << endl; // print out
 }
 // standard accessor method.
 SongQueue* SongQueue::getQueue() {
   SongQueue* current = this;
-  while(current->previous != NULL) {
-    current = current->previous;
-  }
+  while(current->previous != NULL) { current = current->previous; } // loop till head
   return current;
 }
-
 int main() {
   SongQueue* songs = new SongQueue();
-	// call readPlaylist
-  songs = songs->readPlayList();
-  
+  songs = songs->readPlayList(); // call readPlaylist
   string prompt = "Add song (A), Play song (P), Delete song (D), Quit (Q): ";
   do {
     cout << "Your music queue: ";
     songs->printSongList();
-    
-    // prompt the user
-    cout << prompt;
-    // get the choice
-    string choice;
+    cout << prompt; // prompt the user
+    string choice; // get the choice
     cin >> choice;
-    // process it
-    songs->processRequest(choice);
-    // repeat until quit     
-  } while( true );
+    songs->processRequest(choice); // process it
+  } while( true ); // repeat until quit   
 }
