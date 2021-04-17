@@ -101,7 +101,7 @@ void SongQueue::enqueue(string x) {
     current->next = newSong;
   }
 }
-bool SongQueue::isEmpty() { return (this->value == "" && this->previous == NULL && this->next == NULL) }
+bool SongQueue::isEmpty() { return (this->value == "" && this->previous == NULL && this->next == NULL); }
 string SongQueue::peekFront() { return this->getQueue()->value; }
 // reads the file "songs.txt". Extracts the song's title and stores it in a queue.
 SongQueue* SongQueue::readPlayList() {
