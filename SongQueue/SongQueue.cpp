@@ -111,7 +111,6 @@ SongQueue* SongQueue::readPlayList() {
   int songIndex = 0; // count trial number
   if (fileInput.is_open()) { // open file
     while ( getline (fileInput, line) ) { // get lines
-
       for(int i = 0; i < line.length(); i++) {
         if (line.at(i) == '-') {
           line = line.substr(0, i - 1);
@@ -120,6 +119,7 @@ SongQueue* SongQueue::readPlayList() {
       }
       result->enqueue(line);
     }
+    fileInput.close();
   }
   return result;
 }
