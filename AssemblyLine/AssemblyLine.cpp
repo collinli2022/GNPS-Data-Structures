@@ -17,7 +17,7 @@ template <typename T> class Stack { // add to the head and take from head
     T* value;
     Stack* next;
   public:
-    Stack(T* v=NULL, Stack* n=NULL) { value = v; next = n; }
+    Stack(T* v=NULL, Stack* n=NULL) { value = v; n = next; }
 
     T* pop() {
       if(next != NULL) {
@@ -30,10 +30,10 @@ template <typename T> class Stack { // add to the head and take from head
     }
 
     void push(T* v) {
-      if(value != NULL) {
+      if(next != NULL) {
         Stack<T>* oldHead = new Stack<T>(value, next);
         value = v;
-        next = oldHead;
+        next = oldHead;        
       } else { value=v; }
     }
     
@@ -42,18 +42,15 @@ template <typename T> class Stack { // add to the head and take from head
     void setNext(Stack* n) { next = n; }
     Stack* getNext() { return next; }
     string toString() {
-      
-      
-      
       string returnS = "[";
       Stack* node = this;
       while(node != NULL) {
-        returnS += to_string(node->value->getValue());
+        returnS += node->value->getValue();
         returnS += ", ";
         node = node->next;
       }
       if(returnS.length()>2) {
-        returnS=returnS.substr(0, returnS.length()-2);
+        returnS=returnS.substr(returnS.length()-2);
       }
       returnS+= "]";
       return returnS;
@@ -156,11 +153,9 @@ int main() {
 
   Pyramid temp;
   temp.push(new Disk(5));
+  cout << "A: " << temp.toString() << endl;
   temp.push(new Disk(7));
   temp.push(new Disk(6));
-  temp.push(new Disk(2));
-  temp.push(new Disk(1));
-  cout << "A: " << temp.toString() << endl;
   temp.push(new Disk(34));
   cout << "B: " << temp.toString() << endl;
   cout << temp.pop() << endl;
