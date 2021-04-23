@@ -14,31 +14,41 @@ using namespace std;
 /* --------------------------------------------------templates-------------------------------------------------- */
 template <typename T> class Stack { // add to the head and take from head
   private:
-    T* value;
+    T value;
     Stack* next;
+    int length;
   public:
-    Stack(T* v=NULL, Stack* n=NULL) { value = v; next = n; }
+    Stack() {next = NULL; length = 0;}
+    Stack(T v, Stack* n=NULL) {value = v; next = n; length = 0; }
 
-    T* pop() {
-      if(next != NULL) {
-        T* returnT = value;
+    T pop() {
+      if(length <= 1) {
+        length = 0;
+        return value;
+      } else {
+        T returnT = value;
         value = next->value;
         next = next->next;
+        length -= 1;
         return returnT;
-      } else { value = NULL; return value; }
-      return NULL;
+      }
     }
-    T* peek() { return value; }
-    bool isEmpty() {return (value==NULL); }
-
-    void push(T* v) {
-      if(value != NULL) {
+    T peek() { return value; }
+    void push(T v) {
+      if(length == 0) {
+        value = v;
+      } else if(next == NULL) {
+        Stack<T>* oldHead = new Stack<T>(value);
+        value = v;
+        next = oldHead;
+      } else {
         Stack<T>* oldHead = new Stack<T>(value, next);
         value = v;
-        next = oldHead;        
-      } else { value=v; }
+        next = oldHead;  
+      }
+      length += 1;
     }
-    
+    bool isEmpty() {return (length<=0); }
     void setValue(T v) { value = v; }
     T getValue() { return value; }
     void setNext(Stack* n) { next = n; }
@@ -47,12 +57,15 @@ template <typename T> class Stack { // add to the head and take from head
       string returnS = "[";
       Stack* node = this;
       while(node != NULL) {
-        returnS += to_string(node->value->getValue());
+        returnS += to_string(node->value.getValue());
+        if(node->next==NULL) {
+          returnS += "(NULL)";
+        }
         returnS += ", ";
         node = node->next;
       }
       if(returnS.length()>2) {
-        returnS=returnS.substr(0,returnS.length()-2);
+        returnS=returnS.substr(0, returnS.length()-2);
       }
       returnS+= "]";
       return returnS;
@@ -62,23 +75,34 @@ template <typename T> class Stack { // add to the head and take from head
 
 template <class T> class Queue { // add to tail and take from head
   private:
-    T* value;
+    T value;
     Queue* next;
+    int length;
   public:
-    Queue(T* v=NULL, Queue* n=NULL) {value = v; next = n; } // Constructor
+    Queue() {next = NULL;}
+    Queue(T v, Queue* n=NULL) {value = v; next = n; length = 0;} // Constructor
 
-    T* pop() { // take from head
-      if(next != NULL) {
-        T* returnT = value;
+    T pop() { // take from head
+      if(length<=0) {
+        length=0;
+        return value;
+      } else if(next == NULL) {
+        T returnT = value;
+        length-=1;
+        return returnT;
+      } else {
+        T returnT = value;
         value = next->value;
         next = next->next;
+        length-=1;
         return returnT;
-      } else { value = NULL; return value; }
+      }
     }
-    T* peek() { return value; }
+    T peek() { return value; }
 
-    void push(T* v) { // add to tail
-      if(value==NULL) {
+    void push(T v) { // add to tail
+      if(length<=0) {
+        length=1;
         value=v;
         return;
       }
@@ -86,10 +110,11 @@ template <class T> class Queue { // add to tail and take from head
       while(last->next != NULL) { last=last->next; }
       Queue<T>* newTail = new Queue<T>(v, NULL);
       last->setNext(newTail);
+      length+=1;
     }
 
     bool isEmpty() {
-      return value == NULL;
+      return (length<=0);
     }
 
     void setValue(T v) { value = v; }
@@ -100,7 +125,7 @@ template <class T> class Queue { // add to tail and take from head
       string returnS = "[";
       Queue* node = this;
       while(node != NULL) {
-        returnS += node->value->toString();
+        returnS += node->value.toString();
         returnS += ", ";
         node = node->next;
       }
@@ -117,32 +142,24 @@ class Disk {
   private:
     int radius;
   public:
-    Disk(int r) { radius = r;}
+    Disk(int r=-1) { radius = r;}
     int getValue() { return radius;}
     void setRadius(int r) { radius = r; }
-    string toString() {return to_string(radius); }
+    string toString() { return to_string(radius); }
     ~Disk() { }
 };
 
 class Pyramid {
   private:
-    Stack<Disk>* disks;
+    Stack<Disk> disks;
   public:
-    Pyramid(Stack<Disk>* d=new Stack<Disk>()) { disks = d; }
-    
-    Disk* pop() { return disks->pop(); }
-    Disk* peek() { return disks->peek(); }
-    void push(Disk* value) { disks->push(value); }
-
-    bool isEmpty() {
-      return disks->isEmpty();
-    }
-
-    string toString() {
-      return disks->toString();
-    }
-
-    ~Pyramid() { delete disks; }
+    Pyramid(Stack<Disk> d=Stack<Disk>()) {disks = d; }
+    Disk pop() { return disks.pop(); }
+    Disk peek() { return disks.peek(); }
+    void push(Disk value) { disks.push(value); }
+    bool isEmpty() { return disks.isEmpty(); }
+    string toString() { return disks.toString(); }
+    ~Pyramid() { }
 };
 
 class AssemblyLine {
@@ -160,12 +177,12 @@ class AssemblyLine {
       stringstream iss(line);
       string number;
       vector<string> myNumbers;
-      while ( iss >> number ) {
+      while (iss >> number) {
         myNumbers.push_back( number );
       }
 
-      for(string i:myNumbers) {
-        assemblyLineIn.push(new Disk(stoi(i)));
+      for(string i : myNumbers) {
+        assemblyLineIn.push(Disk(stoi(i)));
       }
 
       assemblyLineOut = Queue<Pyramid>();
@@ -176,7 +193,7 @@ class AssemblyLine {
     void unloadRobot() {
       Pyramid temp = Pyramid();
       while(!robotArm.isEmpty()) { temp.push(robotArm.pop()); }
-      assemblyLineOut.push(&temp);
+      assemblyLineOut.push(temp);
       robotArm = Pyramid();
     }
 
@@ -191,10 +208,23 @@ class AssemblyLine {
     */
     void process() {
       while(!assemblyLineIn.isEmpty()) {
-        if (robotArm.isEmpty() || assemblyLineIn.peek()->getValue() > robotArm.peek()->getValue()) {
-          robotArm.push(assemblyLineIn.pop());
+        bool A = robotArm.isEmpty();
+        cout << "IN: " << assemblyLineIn.toString() << endl;
+        if(!A) {
+          cout << "ARM: " << robotArm.toString() << endl;
+          bool B = assemblyLineIn.peek().getValue() > robotArm.peek().getValue();
+          if (B) {
+            Disk popped = assemblyLineIn.pop();
+            cout << "poppedB: " << popped.toString() << endl;
+            string a = popped.toString();
+            robotArm.push(popped);
+          } else {
+            unloadRobot();
+          }
         } else {
-          unloadRobot();
+            Disk popped = assemblyLineIn.pop();
+            cout << "poppedA: " << popped.toString() << endl;
+            robotArm.push(popped);
         }
       }
     }
@@ -207,31 +237,30 @@ class AssemblyLine {
 
 
 int main() {
-  Pyramid temp;
-  temp.push(new Disk(5));
-  cout << "A: " << temp.toString() << endl;
-  temp.push(new Disk(7));
-  temp.push(new Disk(6));
-  temp.push(new Disk(34));
-  cout << "B: " << temp.toString() << endl;
-  cout << temp.pop() << endl;
-  cout << temp.toString() << endl << endl;
-
-  Queue<Disk> aa;
-  cout << "Start" << endl;
-  aa.push(new Disk(5));
-  cout << "A: " << aa.toString() << endl;
-  aa.push(new Disk(7));
-  aa.push(new Disk(6));
-  aa.push(new Disk(34));
-  cout << "B: " << aa.toString() << endl;
-  cout << aa.pop() << endl;
-  cout << aa.toString() << endl;
+  cout << "test" << endl;
+  Pyramid robotArm = Pyramid();
+  cout << "test2" << endl;
+  robotArm.push(Disk(7));
+  robotArm.push(Disk(6));
+  robotArm.push(Disk(5));
+  robotArm.push(Disk(4));
+  cout << "test3" << endl;
+  cout << robotArm.toString() << endl;
+  cout << "test4" << endl;
+  cout << robotArm.pop().toString() << endl;
+  cout << robotArm.pop().toString() << endl;
+  cout << robotArm.pop().toString() << endl;
+  cout << robotArm.toString() << endl;
+  cout << "test5" << endl;
+  cout << robotArm.pop().toString() << endl;
+  robotArm.push(Disk(7));
+  robotArm.push(Disk(6));
+  cout << robotArm.toString() << endl;
 
   // prompts the user for the name of a file
   cout << "Enter the name of the file: ";
-  string inputName;
-  cin >> inputName;
+  string inputName = "in.txt";
+  //cin >> inputName;
 
   string line;
   ifstream fileInput(inputName); // Creates an input stream
@@ -239,7 +268,6 @@ int main() {
   int trialIndex = 0; // count trial number
   if (fileInput.is_open()) { // open file
     fileOutput.open("result.txt");
-    // fileOutput << "Infix    -->    Postfix    -->    Evaluate\n";
     while ( getline (fileInput, line) ) { // get lines
       AssemblyLine input = AssemblyLine(line);
       input.process();
