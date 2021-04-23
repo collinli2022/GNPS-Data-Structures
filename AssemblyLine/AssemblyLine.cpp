@@ -19,7 +19,7 @@ template <typename T> class Stack { // add to the head and take from head
     int length;
   public:
     Stack() {next = NULL; length = 0;}
-    Stack(T v, Stack* n=NULL) {value = v; next = n; length = 0; }
+    Stack(T v, Stack* n=NULL) {value = v; next = n; length = 1; }
 
     T pop() {
       if(length <= 1) {
@@ -38,7 +38,7 @@ template <typename T> class Stack { // add to the head and take from head
       if(length == 0) {
         value = v;
       } else if(next == NULL) {
-        Stack<T>* oldHead = new Stack<T>(value);
+        Stack<T>* oldHead = new Stack<T>(value, NULL);
         value = v;
         next = oldHead;
       } else {
@@ -58,9 +58,6 @@ template <typename T> class Stack { // add to the head and take from head
       Stack* node = this;
       while(node != NULL) {
         returnS += to_string(node->value.getValue());
-        if(node->next==NULL) {
-          returnS += "(NULL)";
-        }
         returnS += ", ";
         node = node->next;
       }
@@ -70,7 +67,7 @@ template <typename T> class Stack { // add to the head and take from head
       returnS+= "]";
       return returnS;
     }
-    ~Stack() { delete next; }
+    ~Stack() { next = nullptr; delete next; }
 };
 
 template <class T> class Queue { // add to tail and take from head
@@ -79,8 +76,8 @@ template <class T> class Queue { // add to tail and take from head
     Queue* next;
     int length;
   public:
-    Queue() {next = NULL;}
-    Queue(T v, Queue* n=NULL) {value = v; next = n; length = 0;} // Constructor
+    Queue() {next = NULL; length = 0;}
+    Queue(T v, Queue* n=NULL) {value = v; next = n; length = 1;} // Constructor
 
     T pop() { // take from head
       if(length<=0) {
@@ -105,12 +102,16 @@ template <class T> class Queue { // add to tail and take from head
         length=1;
         value=v;
         return;
+      } else if(next == NULL) {
+        next = new Queue<T>(v);
+        length+=1;
+      } else {
+        Queue<T>* last = this;
+        while(last->next != NULL) { last=last->next; }
+        Queue<T>* newTail = new Queue<T>(v);
+        last->next=newTail;
+        length+=1;
       }
-      Queue<T>* last = this;
-      while(last->next != NULL) { last=last->next; }
-      Queue<T>* newTail = new Queue<T>(v, NULL);
-      last->setNext(newTail);
-      length+=1;
     }
 
     bool isEmpty() {
@@ -132,10 +133,11 @@ template <class T> class Queue { // add to tail and take from head
       if(returnS.length()>2) {
         returnS=returnS.substr(0,returnS.length()-2);
       }
+      returnS+= " - " + to_string(length);
       returnS+= "]";
       return returnS;
     }
-    ~Queue() { delete next; }
+    ~Queue() { next = nullptr; delete next; }
 };
 /* --------------------------------------------------templates-------------------------------------------------- */
 class Disk {
@@ -192,8 +194,9 @@ class AssemblyLine {
     // "flips over" the pyramid in the robotArm and adds it to the assemblyLineOut queue. Precondition: robotArm is not empty and holds an inverted  pyramid of disks
     void unloadRobot() {
       Pyramid temp = Pyramid();
-      while(!robotArm.isEmpty()) { temp.push(robotArm.pop()); }
+      while(!robotArm.isEmpty()) { Disk tempValue = robotArm.pop(); temp.push(tempValue); }
       assemblyLineOut.push(temp);
+      
       robotArm = Pyramid();
     }
 
@@ -208,24 +211,21 @@ class AssemblyLine {
     */
     void process() {
       while(!assemblyLineIn.isEmpty()) {
-        bool A = robotArm.isEmpty();
         cout << "IN: " << assemblyLineIn.toString() << endl;
-        if(!A) {
-          cout << "ARM: " << robotArm.toString() << endl;
-          bool B = assemblyLineIn.peek().getValue() > robotArm.peek().getValue();
-          if (B) {
-            Disk popped = assemblyLineIn.pop();
-            cout << "poppedB: " << popped.toString() << endl;
-            string a = popped.toString();
-            robotArm.push(popped);
-          } else {
-            unloadRobot();
-          }
+        cout << "OUT: " << assemblyLineOut.toString() << endl;
+        cout << "Robot: " << robotArm.toString() << endl << endl;
+        bool A = robotArm.isEmpty();
+        bool B = assemblyLineIn.peek().getValue() > robotArm.peek().getValue();
+        
+        if(A || B) {
+          Disk popped = assemblyLineIn.pop();
+          robotArm.push(popped);
         } else {
-            Disk popped = assemblyLineIn.pop();
-            cout << "poppedA: " << popped.toString() << endl;
-            robotArm.push(popped);
+          unloadRobot();
         }
+      }
+      if(!robotArm.isEmpty()) {
+        unloadRobot();
       }
     }
     
@@ -266,7 +266,7 @@ int main() {
   ifstream fileInput(inputName); // Creates an input stream
   ofstream fileOutput;  
   int trialIndex = 0; // count trial number
-  if (fileInput.is_open()) { // open file
+  if (fileInput.is_open()) { // open filep
     fileOutput.open("result.txt");
     while ( getline (fileInput, line) ) { // get lines
       AssemblyLine input = AssemblyLine(line);
