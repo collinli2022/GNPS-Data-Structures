@@ -12,7 +12,7 @@
 #include<bits/stdc++.h> 
 using namespace std;
 /* --------------------------------------------------templates-------------------------------------------------- */
-template <typename T> class Stack { // add to the head and take from head
+template <typename T> class Stack { // add to the tail and take from tail
   private:
     T value;
     Stack* next;
@@ -26,34 +26,47 @@ template <typename T> class Stack { // add to the head and take from head
         length = 0;
         return value;
       } else {
-        T returnT = value;
-        value = next->value;
-        next = next->next;
+        Stack<T>* newLast = this;
+        while(newLast->next->next != NULL) { newLast=newLast->next; }
+        T returnT = newLast->next->value;
+        newLast->next = NULL;
         length -= 1;
         return returnT;
       }
     }
-    T peek() { return value; }
-    void push(T v) {
-      if(length == 0) {
-        value = v;
-      } else if(next == NULL) {
-        Stack<T>* oldHead = new Stack<T>(value, NULL);
-        value = v;
-        next = oldHead;
+    T peek() {
+      if(length <= 1) {
+        return value;
       } else {
-        Stack<T>* oldHead = new Stack<T>(value, next);
-        value = v;
-        next = oldHead;  
+        Stack<T>* newLast = this;
+        while(newLast->next != NULL) { newLast=newLast->next; }
+        return newLast->value;
       }
-      length += 1;
+      
+      
+    }
+    void push(T v) { // add to tail
+      if(length<=0) {
+        length=1;
+        value=v;
+        return;
+      } else if(next == NULL) {
+        next = new Stack<T>(v);
+        length+=1;
+      } else {
+        Stack<T>* last = this;
+        while(last->next != NULL) { last=last->next; }
+        Stack<T>* newTail = new Stack<T>(v);
+        last->next=newTail;
+        length+=1;
+      }
     }
     bool isEmpty() {return (length<=0); }
     void setValue(T v) { value = v; }
     T getValue() { return value; }
     void setNext(Stack* n) { next = n; }
     Stack* getNext() { return next; }
-    string toString() {
+    string toString() { // prints in reverse to account for my stack style
       string returnS = "[";
       Stack* node = this;
       while(node != NULL) {
@@ -133,7 +146,6 @@ template <class T> class Queue { // add to tail and take from head
       if(returnS.length()>2) {
         returnS=returnS.substr(0,returnS.length()-2);
       }
-      returnS+= " - " + to_string(length);
       returnS+= "]";
       return returnS;
     }
@@ -196,7 +208,6 @@ class AssemblyLine {
       Pyramid temp = Pyramid();
       while(!robotArm.isEmpty()) { Disk tempValue = robotArm.pop(); temp.push(tempValue); }
       assemblyLineOut.push(temp);
-      
       robotArm = Pyramid();
     }
 
@@ -211,9 +222,11 @@ class AssemblyLine {
     */
     void process() {
       while(!assemblyLineIn.isEmpty()) {
+        /*
         cout << "IN: " << assemblyLineIn.toString() << endl;
         cout << "OUT: " << assemblyLineOut.toString() << endl;
         cout << "Robot: " << robotArm.toString() << endl << endl;
+        */
         bool A = robotArm.isEmpty();
         bool B = assemblyLineIn.peek().getValue() > robotArm.peek().getValue();
         
@@ -237,30 +250,11 @@ class AssemblyLine {
 
 
 int main() {
-  cout << "test" << endl;
-  Pyramid robotArm = Pyramid();
-  cout << "test2" << endl;
-  robotArm.push(Disk(7));
-  robotArm.push(Disk(6));
-  robotArm.push(Disk(5));
-  robotArm.push(Disk(4));
-  cout << "test3" << endl;
-  cout << robotArm.toString() << endl;
-  cout << "test4" << endl;
-  cout << robotArm.pop().toString() << endl;
-  cout << robotArm.pop().toString() << endl;
-  cout << robotArm.pop().toString() << endl;
-  cout << robotArm.toString() << endl;
-  cout << "test5" << endl;
-  cout << robotArm.pop().toString() << endl;
-  robotArm.push(Disk(7));
-  robotArm.push(Disk(6));
-  cout << robotArm.toString() << endl;
 
   // prompts the user for the name of a file
   cout << "Enter the name of the file: ";
-  string inputName = "in.txt";
-  //cin >> inputName;
+  string inputName;
+  cin >> inputName;
 
   string line;
   ifstream fileInput(inputName); // Creates an input stream
