@@ -16,8 +16,9 @@ int main() {
   //string s = "XDFZM";   
   
   TreeNode* root = nullptr;
+  cout << "start" << endl;
   root = root->buildTree(s);
-  cout << display(root, 0) << endl;
+  cout << root->display(root, 1) << endl;
 
   cout << "\nPreorder: " << root->preorderTraverse(root) << endl;
   cout << "\nInorder: " << root->inorderTraverse(root) << endl;
@@ -25,6 +26,7 @@ int main() {
 
   cout << "\n\nNodes = " << root->countNodes(root) << endl;
   cout << "Leaves = " << root->countLeaves(root) << endl;
+  
   cout << "Only children = " << root->countOnlyChildren(root) << endl;
   cout << "Grandparents = " << root->countGrandParents(root) << endl;
 
