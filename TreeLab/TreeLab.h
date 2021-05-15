@@ -123,7 +123,14 @@ int TreeNode::countLeaves(TreeNode* t) {
 int TreeNode::countGrandParents(TreeNode* t) {
     int total = 0;
     if (t == NULL) { return 0; }
-    if (t->left != NULL) { // Check grandchildren for only left side 
+    if (t->left != NULL && t->right != NULL) {
+        if (t->left->left != NULL
+            || t->left->right != NULL
+            || t->right->left != NULL
+            || t->right->right != NULL) { // Check for grandchildren
+            total += 1;
+        }
+    } else if (t->left != NULL) { // Check grandchildren for only left side 
         if (t->left->left != NULL
             || t->left->right != NULL) {
             total += 1;
@@ -134,7 +141,8 @@ int TreeNode::countGrandParents(TreeNode* t) {
             total += 1;
         }
     }
-    // Recursive call on left and right subtree
+    // Recursive call on left and
+    // right subtree
     total += countGrandParents(t->left);
     total += countGrandParents(t->right);
     return total;
