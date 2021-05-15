@@ -198,7 +198,7 @@ string TreeNode::displayCurrentLevel(TreeNode* t, int level) {
     if (t == NULL) { return ""; }
     if (level == 0) { s += t->c; }
     else if (level >= 1) {
-        s += displayCurrentLevel(t->left, level-1);
+        s += displayCurrentLevel(t->left, level-1); // keep going down to next level
         s += displayCurrentLevel(t->right, level-1);
     }
     return s;
@@ -206,7 +206,7 @@ string TreeNode::displayCurrentLevel(TreeNode* t, int level) {
 
 string TreeNode::displayLevelOrder(TreeNode* t) {
     string str = "";
-    for (int i = 0; i < t->height(t); i++) { str += t->displayCurrentLevel(t, i); }
+    for (int i = 0; i < t->height(t); i++) { str += t->displayCurrentLevel(t, i); } // go through each layer
     return str;
 }
 
