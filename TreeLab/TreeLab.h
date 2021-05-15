@@ -4,6 +4,7 @@
 // TreeLab header file    
 
 // Preprocessor directive
+#include <iostream>
 #include <string>
 using namespace std;
 
@@ -44,10 +45,11 @@ class TreeNode {
 };
 
 TreeNode* TreeNode::buildTree(string s) {
+  if(s.length() < 2) { return nullptr; }
   TreeNode* returnTree = new TreeNode(' ');
   for(int i = 1; i < s.length(); i++) {
     if(i==1) { returnTree->c = s[1]; }
-    else { returnTree = insert(returnTree, s[i]); }
+    else { returnTree = returnTree->insert(returnTree, s[i]); }
   }
   return returnTree;
 }
@@ -60,7 +62,7 @@ TreeNode* TreeNode::insert(TreeNode* t, char s) {
   return t;
 }
 
-/* Print nodes at a given level */
+// Print nodes at a given level 
 string TreeNode::display(TreeNode* t, int level) {
     string str = "";
     if (t == NULL) { return ""; } // Base case
@@ -140,8 +142,7 @@ int TreeNode::countGrandParents(TreeNode* t) {
             total += 1;
         }
     }
-    // Recursive call on left and
-    // right subtree
+    // Recursive call
     total += countGrandParents(t->left);
     total += countGrandParents(t->right);
     return total;
