@@ -6,6 +6,7 @@
 // Preprocessor directive
 #include <iostream>
 #include <string>
+#include <bits/stdc++.h>
 using namespace std;
 
 // header guards
@@ -56,7 +57,7 @@ TreeNode* TreeNode::buildTree(string s) {
 
 TreeNode* TreeNode::insert(TreeNode* t, char s) {
   if (t==NULL) { return new TreeNode(s); } // Insert the first node, if root is NULL.
-  if (s > t->c) { t->right = insert(t->right, s); } // Insert right node data, if the 'value' is greater than root's data
+  if (s >= t->c) { t->right = insert(t->right, s); } // Insert right node data, if the 'value' is greater than root's data
   else { t->left = insert(t->left, s); } // Insert left node data, if the 'value' is less than or equal to root's data
 
   return t;
@@ -174,11 +175,16 @@ int TreeNode::height(TreeNode* t) { // returns the max of the heights to the lef
   else { return (rDepth + 1); }
 }
 
-int TreeNode::longestPath(TreeNode* t) { // return the max of the sum of the heights to the left and the heights to the right
-  int longestPath = 0;
-  longestPath += t->height(t->left); // left height
-  longestPath += t->height(t->right); // right height
-  return longestPath;
+int TreeNode::longestPath(TreeNode* t) {
+    if (t == NULL) { return 0; } 
+    int Lheight = height(t->left); // get the height of left and right sub-trees
+    int Rheight = height(t->right);
+    int Ldiameter = longestPath(t->left); // get the diameter of left and right sub-trees
+    int Rdiameter = longestPath(t->right);
+ 
+    int a = (Lheight + Rheight);
+    int b = std::max(Ldiameter, Rdiameter);
+    return std::max(a, b); // Return max of following three
 }
 
 char TreeNode::min(TreeNode* t) {

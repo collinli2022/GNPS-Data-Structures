@@ -7,9 +7,10 @@
 
 int main() {
   //the tree contains the letters of the string, starting at position 1
-  //string s = "XCOMPUTERSCIENCE";
+  string s = "XCOMPUTERSCIENCE";
+  //s = "XXXXX";
   //string s = "XGNSHighSchool"; 
-  string s = "XAComputerScienceTreeHasItsRootAtTheTop";
+  //string s = "XAComputerScienceTreeHasItsRootAtTheTop";
   //string s = "XA";   
   //string s = "XAF";  
   //string s = "XAFP";  
