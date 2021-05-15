@@ -4,7 +4,6 @@
 // TreeLab header file    
 
 // Preprocessor directive
-#include <iostream>
 #include <string>
 using namespace std;
 
