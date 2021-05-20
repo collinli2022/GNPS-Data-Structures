@@ -20,7 +20,7 @@ class TreeNode {
     TreeNode* left;
     TreeNode* right;
   public:
-    TreeNode(string cc = 0, TreeNode * l = nullptr, TreeNode * r = nullptr) {
+    TreeNode(string cc = "", TreeNode * l = nullptr, TreeNode * r = nullptr) {
         c = cc;
         left = l;
         right = r;
@@ -38,8 +38,9 @@ class TreeNode {
 
 TreeNode* TreeNode::insert(TreeNode* t, string s) {
   if (t==NULL) { return new TreeNode(s); } // Insert the first node, if root is NULL.
-  if (s.compare(t->c) == 0) {freq += 1;}
-  if (s.compare(t->c) > 0) { t->right = insert(t->right, s); } // Insert right node data, if the 'value' is greater than root's data
+  else if (c == "") { t->c = s; }
+  else if (s.compare(t->c) == 0) { t->freq += 1; }
+  else if (s.compare(t->c) > 0) { t->right = insert(t->right, s); } // Insert right node data, if the 'value' is greater than root's data
   else { t->left = insert(t->left, s); } // Insert left node data, if the 'value' is less than or equal to root's data
 
   return t;
@@ -73,7 +74,7 @@ string TreeNode::max(TreeNode* t) {
 string TreeNode::toString(TreeNode* t) {
     string s = "";
     if (t==NULL) { return ""; }
-    s += "(" + t->c + ", " + to_string(t->freq) + "), "; // first print data of node
+    s += "(" + t->c + ", " + to_string(t->freq) + ")\n"; // first print data of node
     s += toString(t->left); // then recur on left sutree
     s += toString(t->right); // now recur on right subtree
     return s;
