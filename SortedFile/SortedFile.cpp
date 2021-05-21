@@ -36,8 +36,8 @@ int main() {
       while (ss >> word) { sorter->insert(sorter, word); } // insert words
       trialIndex += 1;
     }
-    //cout << sorter->display(sorter, 0) << endl; // output into result file
-    fileOutput << sorter->toString(sorter); // debug
+    //cout << sorter->display(sorter, 0) << endl; // debug
+    fileOutput << sorter->toString(sorter); // output into result file
     fileInput.close();
     fileOutput.close();
   } else { cout << "Unable to open file"; }
