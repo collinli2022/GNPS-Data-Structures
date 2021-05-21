@@ -33,13 +33,11 @@ int main() {
     while ( getline (fileInput, line) ) { // get lines
       istringstream ss(line);
       string word; // for storing each word
-      while (ss >> word) { sorter->insert(sorter, word); }
+      while (ss >> word) { sorter->insert(sorter, word); } // insert words
       trialIndex += 1;
     }
-
-    cout << sorter->display(sorter, 0) << endl;
-
-    fileOutput << sorter->toString(sorter);
+    cout << sorter->display(sorter, 0) << endl; // output into result file
+    // fileOutput << sorter->toString(sorter); // debug
     fileInput.close();
     fileOutput.close();
   } else { cout << "Unable to open file"; }

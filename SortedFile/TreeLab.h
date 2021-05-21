@@ -26,14 +26,10 @@ class TreeNode {
         right = r;
         freq = 1;
     }
-    // this class must contain the following methods:
     TreeNode* insert(TreeNode* t, string s); // inserts a node containing the character into the tree
-    string display(TreeNode* t, int level);
-    string min(TreeNode* t);
-    string max(TreeNode* t);
+    //string display(TreeNode* t, int level);
     string toString(TreeNode* t);
     ~TreeNode() { left = nullptr; right = nullptr; delete left; delete right; }
-    //you may have TreeNode objects or TreeNode pointers as parameters/returns based upon how you set up your code
 };
 
 TreeNode* TreeNode::insert(TreeNode* t, string s) {
@@ -46,7 +42,8 @@ TreeNode* TreeNode::insert(TreeNode* t, string s) {
   return t;
 }
 
-// Print nodes at a given level 
+/*
+// Print nodes at a given level (visual display)
 string TreeNode::display(TreeNode* t, int level) {
     string str = "";
     if (t == NULL) { return ""; } // Base case
@@ -58,18 +55,7 @@ string TreeNode::display(TreeNode* t, int level) {
     str += display(t->left, level+1); // Process left child 
     return str;
 }
-
-string TreeNode::min(TreeNode* t) {
-  TreeNode* current = t;
-  while (current->left != NULL) { current = current->left; } // loop down to find the leftmost leaf
-  return (current->c); 
-}
-
-string TreeNode::max(TreeNode* t) {
-  TreeNode* current = t;
-  while (current->right != NULL) { current = current->right; } // loop down to find the rightmost leaf
-  return (current->c);
-}
+*/
 
 string TreeNode::toString(TreeNode* t) {
     string s = "";
