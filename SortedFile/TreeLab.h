@@ -74,8 +74,8 @@ string TreeNode::max(TreeNode* t) {
 string TreeNode::toString(TreeNode* t) {
     string s = "";
     if (t==NULL) { return ""; }
-    s += "(" + t->c + ", " + to_string(t->freq) + ")\n"; // first print data of node
     s += toString(t->left); // then recur on left sutree
+    s +=  t->c + ": " + to_string(t->freq) + "\n"; // first print data of node
     s += toString(t->right); // now recur on right subtree
     return s;
 }

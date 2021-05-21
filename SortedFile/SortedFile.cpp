@@ -36,6 +36,9 @@ int main() {
       while (ss >> word) { sorter->insert(sorter, word); }
       trialIndex += 1;
     }
+
+    cout << sorter->display(sorter, 0) << endl;
+
     fileOutput << sorter->toString(sorter);
     fileInput.close();
     fileOutput.close();
