@@ -1,6 +1,6 @@
 // Collin Li
 // Data Structures
-// 05/17/2021
+// 05/24/2021
 // TreeLab header file    
 
 // Preprocessor directive
