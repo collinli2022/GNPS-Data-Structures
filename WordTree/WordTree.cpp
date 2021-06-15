@@ -87,5 +87,16 @@ int main() {
   // add the node for end-of-word marker
   // Print the statistics: total letters, total nodes, %
   // Output the list in result.txt in alphabetical order
+
+  ifstream ifs("input.txt"); //Creates input stream
+  ofstream ofs("result.txt"); //Creates output stream
+  int list = 0;
+  WordNode* root = new WordNode();
+  root = root->buildTree(ifs, list);
+  int tree = root->countNodes(root);
+  float savings = 1.0 - (float) tree / (float) list;
+  cout << "List: " << list << endl << "Tree: " << tree << endl << "Savings: " << savings << endl;
+
+
   return 0;
 }
