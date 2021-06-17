@@ -13,90 +13,64 @@ class WordNode {
     WordNode* children[26];
     bool endOfWord;
   public:
-    // constructor
-    WordNode(); 
+    WordNode() { endOfWord = false; } // constructor
     
-    // build tre
     WordNode* buildTree(ifstream &file, int &count);
     void insert(WordNode* w, string s);
     void traverse(string prefix, WordNode* w, ofstream &file);
     int countNodes(WordNode* w);
-    // other methods as desired
-    void display(struct TrieNode* root, char str[], int level) {
-        // If node is leaf node, it indicates end
-        // of string, so a null character is added
-        // and string is displayed
-        if (isLeafNode(root)) {
-            str[level] = '\0';
-            cout << str << endl;
-        }
-      
-        int i;
-        for (i = 0; i < alpha_size; i++)  {
-            // if NON NULL child is found
-            // add parent key to str and
-            // call the display function recursively
-            // for child node
-            if (root->children[i]) {
-                str[level] = i + 'a';
-                display(root->children[i], str, level + 1);
-            }
-        }
-    }
 };
 
 WordNode* WordNode::buildTree(ifstream &file, int &count) {
-  if (file.is_open()) { // open file
-    while ( getline (file, line) ) { // get lines
-      transform(line.begin(), line.end(), line.begin(), ::tolower); // to lower case (even though the assignment says only lower case... backup)
-      
-      istringstream ss(line); // Used to split string around spaces.
-      string word; // for storing each word
-      while (ss >> word) { this->insert(word); count += 1; } // loop through all words in line
-    }
-    file.close();
-    } else { cout << "Unable to open file"; }
+    WordNode* output = new WordNode (); // head of tree
+    string s; // temp
+    while(file>>s) { output->insert(output, s); count += s.length(); } // count each insert
+    return output;
 }
 
 void WordNode::insert(WordNode* w, string s) {
-  WordNode* temp = w;
-  for (int i = 0; i < s.length(); i++) { // each char is a layer
-      int index = s[i] - 'a'; // only lowercase letter
-      if (!temp->children[index]) { temp->children[index] = getNode(); } // char does not exist
-      else { temp = temp->children[index]; }
+  for(int i = 0; i < s.length(); i++) { // loop through char in string
+    if(w->children[s[i]-'a'] == NULL) { w->children[s[i]-'a'] = new WordNode(); } // if that char does not exist, add new one
+    w = w->children[s[i]-'a']; 
   }
-
-  // mark last node as leaf
-  temp->isEndOfWord = true;
+  w->endOfWord = true;
 }
 
-void WordTree::traverse(string prefix, WordNode* w, ofstream &file) {
+void WordNode::traverse(string prefix, WordNode* w, ofstream &file) {
+    for(int i = 0; i < 26; i++) { // goes through each branch
+        if(w->children[i] != NULL) { // make sure branch is NULL
+            string combined = prefix+char(i + 'a'); // prefix + current letter
+            if(w->children[i]->endOfWord == true) { file << combined << endl; } // end of word so add to output file
+            w->traverse(combined, w->children[i], file); // recursion
+        }
+    }
+}
 
+int WordNode::countNodes(WordNode* w) {
+  int totalNodes = 1; // include itself
+  for (int i = 0; i < 26; i++)  { // other branches
+    if (w->children[i] != NULL) {
+      totalNodes += countNodes(w->children[i]); // add other nodes recursivly
+    }
+  }
+  return totalNodes;
 }
 
 int main() {
+  ifstream ifs("input.txt"); // Creates input stream
+  ofstream ofs("result.txt"); // Creates output stream
+  
+  int list = 0; // represents list total
   WordNode* root = new WordNode();
-  // Big loop:
-  // read a word
-  // count the total number of letters
-  // for each letter in the word
-  // get the position of the letter in the children array
-  // if the letter isn&#39;t there
-  // add a node
-  // get the next level
-  // add the node for end-of-word marker
+  root = root->buildTree(ifs, list); // build tree
+
+  int tree = root->countNodes(root); // represents tree total
+  float savings = (1.0 - (float) tree / (float) list) * (100); // calculate savings
+  
   // Print the statistics: total letters, total nodes, %
+  cout << "List Total: " << list << endl << "Tree Total: " << tree << endl << "Savings Total: " << savings << endl;
+
   // Output the list in result.txt in alphabetical order
-
-  ifstream ifs("input.txt"); //Creates input stream
-  ofstream ofs("result.txt"); //Creates output stream
-  int list = 0;
-  WordNode* root = new WordNode();
-  root = root->buildTree(ifs, list);
-  int tree = root->countNodes(root);
-  float savings = 1.0 - (float) tree / (float) list;
-  cout << "List: " << list << endl << "Tree: " << tree << endl << "Savings: " << savings << endl;
-
-
+  root->traverse("", root, ofs);
   return 0;
 }
